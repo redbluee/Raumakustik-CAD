@@ -76,42 +76,7 @@ app.layout = html.Div([
     ], style={'display': 'flex', 'flexDirection': 'row'}),
 ], )#style={'display': 'flex', 'flexDirection': 'row'})
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-# app.layout = [
-#     html.H1(children="Reverberation Optimization", style={"textAlign": "left"}),
-#     dcc.Dropdown(
-#         options=[{"label": i, "value": i} for i in df["options"]],
-#         value="A1",
-#         id="dropdown-selection",
-#     ),
-#     dcc.Input(
-#         id="input_1",
-#         type="number",
-#         placeholder="Raumvolumen in m^3",
-#     ),
-#     html.Div(
-#         [
-#             daq.ToggleSwitch(id="my-toggle-switch", value=False),
-#             html.Div(id="my-toggle-switch-output"),
-#         ]
-#     ),
-#     dcc.Input(
-#         type="number",
-#         placeholder="input type {}".format("number"),
-#         id="input_temperature",
-#     ),
-#     dcc.Input(
-#         id="input_3",
-#         type="number",
-#         placeholder="input type {}".format("number"),
-#     ),
-#     dcc.Graph(id="graph-content"),
-# ]
-
-
+# Callback to update GUI and backend
 @callback(
     Output('graph-content', 'figure'),
     Output('my-toggle-switch-output', 'children'),
@@ -130,23 +95,6 @@ def update_graph(value):
 
 def update_output(value):
     return f'The switch is {value}.'
-
-# app.layout = html.Div([
-#     daq.ToggleSwitch(
-#         id='my-toggle-switch',
-#         value=False
-#     ),
-#     html.Div(id='my-toggle-switch-output')
-# ])
-
-
-# @callback(
-#     Output('my-toggle-switch-output', 'children'),
-#     Input('my-toggle-switch', 'value')
-# )
-# def update_output(value):
-#     return f'The switch is {value}.'
-
 
 if __name__ == '__main__':
     app.run(debug=True)
