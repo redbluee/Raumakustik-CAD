@@ -18,14 +18,12 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H1("Reverberation Optimization", className="app-brand")
-            ], width=12),
+        ]),
     ]),
     dbc.Row([
         dbc.Col([
-            html.H3(children="Raumcharakteristiken", style={"textAlign": "left"}),
-            html.Br(),
-            html.Label("Raumvolumen in m<sup>3</sup>"),
-            html.Br(),
+            html.H3(children="Raumcharakteristiken"),
+            html.Label(["Raumvolumen in m", html.Sup(3)]),
             dcc.Input(
                 type="number",
                 placeholder="30",
@@ -67,14 +65,10 @@ layout = dbc.Container([
             html.Br(),
             html.Label("Nachhallzeitdiagramm"),
             dash.dcc.Graph(id="graph-content"),
-            ]),
+        ]),
         dbc.Col([
-            html.Label("Placeholder for Graphs"),
-            dash.dcc.Graph(id="graph-content2"),
-            html.Br(),
-            html.Label("Placeholder for Graphs"),
-            dcc.Graph(id="graph-content3"),
-        ])
+            dcc.Loading(id='p2-2-loading', type='circle', children=dcc.Graph(id='fig-transformed', className='my-graph'))
+        ], width=6, className='multi-graph'),
     ]),
     dbc.Col([], width=2),
 ])

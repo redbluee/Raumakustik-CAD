@@ -2,10 +2,6 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, html
 
-import numpy as np
-
-
-
 
 # Import shared components
 from assets.footer import _footer
@@ -20,17 +16,10 @@ server = app.server
 app.layout = dbc.Container([
 	
 	dbc.Row([
-        # dbc.Col([_nav], width = 2),
-        dbc.Col([], width = 2),
-        dbc.Col([
-            dbc.Row([dash.page_container])
-	    ], width = 10),
-    ]),
+        dbc.Col([dash.page_container])
+	]),
     dbc.Row([
-        dbc.Col([], width = 2),
-        dbc.Col([
-            dbc.Row([_footer])
-	    ], width = 10),
+        dbc.Col([_footer])
     ]),
     dash.dcc.Store(id='browser-memo', data=dict(), storage_type='session')
 ], fluid=True)
