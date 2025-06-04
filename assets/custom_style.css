@@ -221,3 +221,101 @@ input[type="checkbox" i] {
     margin: 0px 5px 0px 0px !important;
     padding: 0px !important;
 }
+
+/* === CUSTOM INPUT STYLES === */
+.custom-input,
+input[type="text"].custom-input,
+input[type="number"].custom-input,
+input[type="password"].custom-input, /* Add other input types if you use them */
+input[type="email"].custom-input {
+    background-color: #0e2a2e; /* A slightly lighter shade than #042f33 for contrast */
+    color: #f6f6f6 !important; /* Ensure text color is light */
+    border: 1px solid #042f33; /* Border matching other elements */
+    border-radius: 8px; /* Consistent with other rounded elements */
+    padding: 8px 12px;
+    font-size: 16px; /* Or inherit from body if preferred */
+    width: 100%; /* Make inputs take full available width in their column */
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Add some space below the input */
+}
+
+.custom-input::placeholder {
+    color: #a0a0a0 !important; /* Lighter placeholder text */
+    opacity: 1; /* Firefox */
+}
+
+.custom-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #a0a0a0 !important;
+}
+
+.custom-input::-ms-input-placeholder { /* Microsoft Edge */
+    color: #a0a0a0 !important;
+}
+
+.custom-input:focus,
+input[type="text"].custom-input:focus,
+input[type="number"].custom-input:focus,
+input[type="password"].custom-input:focus,
+input[type="email"].custom-input:focus {
+    border-color: #3DED97; /* Highlight with accent color on focus */
+    box-shadow: 0 0 0 0.2rem rgba(61, 237, 151, 0.25); /* Subtle glow effect */
+    outline: none; /* Remove default browser outline */
+}
+
+/* If you also want to style dcc.Dropdown similarly, you can add styles for .custom-dropdown */
+.custom-dropdown .Select-control {
+    background-color: #0e2a2e !important;
+    border: 1px solid #042f33 !important;
+    border-radius: 8px;
+}
+
+.custom-dropdown .Select-control .Select-value-label,
+.custom-dropdown .Select-control .Select-placeholder {
+    color: #f6f6f6 !important;
+}
+
+.custom-dropdown .Select-menu-outer {
+    background-color: #0e2a2e !important;
+    border: 1px solid #042f33 !important;
+}
+
+.custom-dropdown .Select-option {
+    background-color: #0e2a2e;
+    color: #f6f6f6 !important;
+}
+
+.custom-dropdown .Select-option.is-focused {
+    background-color: #042f33 !important; /* Darker teal for hover/focus */
+}
+
+.custom-dropdown .Select-option.is-selected {
+    background-color: #3DED97 !important; /* Green for selected */
+    color: #042f33 !important; /* Dark text on green background */
+}
+
+.custom-dropdown .Select-arrow {
+    border-top-color: #f6f6f6 !important; /* Make dropdown arrow visible */
+}
+
+/* === CUSTOM TOGGLE SWITCH === */
+/* Targets the track/background of the ToggleSwitch */
+#my-toggle-switch div[role="button"] {
+    background-color: #042f33 !important; /* Changed to your darkest theme color for OFF state */
+    border: 1px solid #3DED97 !important;   /* Using accent color for border for contrast against dark bg */
+    /* The 'ON' state background is controlled by the 'color' prop in Python */
+    border-radius: 15px !important; /* Example: adjust to your preference */
+}
+
+/* Targets the thumb (the movable circle) of the ToggleSwitch */
+#my-toggle-switch div[role="button"] > div {
+    background-color: #f6f6f6 !important; /* Light thumb color, consistent with text */
+    /* Optional: add a subtle shadow to the thumb for depth */
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Styling for the label if you add one to the ToggleSwitch */
+/* Example: daq.ToggleSwitch(..., label="My Label", labelPosition="top") */
+#my-toggle-switch + label { /* Adjust selector if label is structured differently by DAQ */
+    color: #f6f6f6 !important; /* Ensure label text is light */
+    margin-left: 10px; /* Example spacing if label is next to switch */
+}

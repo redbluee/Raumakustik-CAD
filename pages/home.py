@@ -23,48 +23,76 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H3(children="Raumcharakteristiken"),
-            html.Label(["Raumvolumen in m", html.Sup(3)]),
+            html.Label(["Raumvolumen [m", html.Sup(3), "]"]),
+            html.Br(),
             dcc.Input(
                 type="number",
                 placeholder="30",
                 id="input_room_volume",
                 min=0,
+                className="custom-input",  # Use custom style class
             ),
-            html.Div([
-                daq.ToggleSwitch(id="my-toggle-switch", value=False),
-                html.Div(id="my-toggle-switch-output"),
-            ],style={"align": "left"}),
-            
-            html.Br(),
-            html.Label("Temperatur [°C]"),
-            html.Br(),
-            dash.dcc.Input(
-                type="number",
-                placeholder="20",
-                id="input_room_temperature",
-                min=0,
-            ),
-            
             html.Br(),
             html.Label("Raumhöhe [m]"),
             html.Br(),
-            dash.dcc.Input(
+            dcc.Input(
                 type="number",
                 placeholder="20",
                 id="input_room_height",
                 min=0,
+                className="custom-input",  # Use custom style class
+            ),
+            html.Br(),
+            html.Label("Temperatur [°C]"),
+            html.Br(),
+            dcc.Input(
+                type="number",
+                placeholder="20",
+                id="input_room_temperature",
+                min=0,
+                className="custom-input",  # Use custom style class
+            ),
+            html.Br(),
+            html.Label("Luftfeuchte [ %]"),
+            html.Br(),
+            dcc.Input(
+                type="number",
+                placeholder="50",
+                id="input_room_humidity",
+                min=0,
+                className="custom-input",  # Use custom style class
+            ),
+            html.Br(),
+            html.Label("Umgebungsdruck [hPa]"),
+            html.Br(),
+            dcc.Input(
+                type="number",
+                placeholder="101.35",
+                id="input_room_pressure",
+                min=0,
+                className="custom-input",  # Use custom style class
             ),
             html.Br(),
             html.Label("Raumnutzungsart"),
             html.Br(),
-            dash.dcc.Dropdown(
+            dcc.Dropdown(
                 options=[{"label": i, "value": i} for i in df["options"]],
                 value="A1",
                 id="dropdown_room_usage",
+                className="custom-dropdown",  # Optional: style dropdown as well
             ),
+            html.Div([
+                daq.ToggleSwitch(
+                    id="my-toggle-switch",
+                    value=False,
+                    color="#3DED97",
+                    size=40,
+                    theme={'dark': True}  # Add this
+            )], style={"textAlign": "left"}),
+
             html.Br(),
             html.Label("Nachhallzeitdiagramm"),
-            dash.dcc.Graph(id="graph-content"),
+            dcc.Graph(id="graph-content"),
         ]),
         dbc.Col([
             dcc.Loading(id='p2-2-loading', type='circle', children=dcc.Graph(id='fig-transformed', className='my-graph'))
