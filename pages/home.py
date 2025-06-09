@@ -22,7 +22,7 @@ layout = dbc.Container([
     ]),
     dbc.Row([
         dbc.Col([
-            html.H3(children="Raumcharakteristiken"),
+            html.H5(children="Raumcharakteristiken"),
             html.Label(["Raumvolumen [m", html.Sup(3), "]"]),
             html.Br(),
             dcc.Input(
@@ -89,14 +89,16 @@ layout = dbc.Container([
                     size=40,
                     theme={'dark': True}  # Add this
             )], style={"textAlign": "left"}),
-
-            html.Br(),
-            html.Label("Nachhallzeitdiagramm"),
-            dcc.Graph(id="graph-content"),
-        ]),
+        ], width=3),
         dbc.Col([
-            dcc.Loading(id='p2-2-loading', type='circle', children=dcc.Graph(id='fig-transformed', className='my-graph'))
-        ], width=6, className='multi-graph'),
+            # html.H5(children="Nachhallzeitdiagramm"),
+            dcc.Loading(id='nachhallzeit-graph', type='circle', children=dcc.Graph(id='fig-transformed', className='my-graph'))
+        ], width=4, className='multi-graph'),
+        dbc.Col([
+            html.H5(children="Berichtgenerierung"),
+            html.Button('Export pdf', id='export', n_clicks=0, title='The grid search may take several minutes', className='my-button')
+        ], width=3, style={'text-align':'left', 'margin':'5px 1px 1px 1px'}),
+
     ]),
     dbc.Col([], width=2),
 ])
