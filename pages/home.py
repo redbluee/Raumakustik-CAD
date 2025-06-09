@@ -93,14 +93,20 @@ layout = dbc.Container([
         dbc.Col([
             # html.H5(children="Nachhallzeitdiagramm"),
             dcc.Loading(id='nachhallzeit-graph', type='circle', children=dcc.Graph(id='fig-transformed', className='my-graph'))
-        ], width=4, className='multi-graph'),
+        ], width=6, className='multi-graph'),
         dbc.Col([
             html.H5(children="Berichtgenerierung"),
             html.Button('Export pdf', id='export', n_clicks=0, title='The grid search may take several minutes', className='my-button')
-        ], width=3, style={'text-align':'left', 'margin':'5px 1px 1px 1px'}),
-
+        ], width=2, style={'text-align':'left', 'margin':'5px 1px 1px 1px'}),
     ]),
-    dbc.Col([], width=2),
+    
+    dbc.Row([
+        dbc.Col([
+            html.H5(children="Raumbeschreibende Flächenzuweisung"),
+        ]),
+    ])
+        
+
 ])
 
 
