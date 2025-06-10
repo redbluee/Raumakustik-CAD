@@ -21,7 +21,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([_footer])
     ]),
-    dash.dcc.Store(id='browser-memo', data=dict(), storage_type='session')
+    dash.dcc.Store(id='browser-memo2', data=dict(), storage_type='session')
 ], fluid=True)
 
 # Run App
