@@ -81,7 +81,7 @@ class room:
     
     def get_c(self):
         # Speed of sound in air according to DIN EN ISO 354
-        self.c = (331 + 0.6 * self.get_temperature())# * (1 + (self.get_rel_humidity() / 100)) ** 0.5 # automatisch ausgefüllt, kp wieso
+        self.c = (331.6 + 0.6 * self.get_temperature())# * (1 + (self.get_rel_humidity() / 100)) ** 0.5 # automatisch ausgefüllt, kp wieso
         return self.c
 
 
@@ -334,7 +334,7 @@ class reverberationTime:
         Calculates the reverberation time of the room based on the extended Sabine formula, considering air damping if specified.
     """
     
-    def __init__(self, room, surfaces, frequencyBands, air_damp_calc=True):
+    def __init__(self, room, surfaces, frequencyBands, air_damp_calc=True, meas_reverberation_time=None):
         self.room = room
         self.frequencyBands = frequencyBands
         self.surfaces = surfaces
@@ -347,6 +347,7 @@ class reverberationTime:
         self.air_damp.set_temperature(room.get_temperature())
         self.air_damp.set_pressure(room.get_pressure())
         self.air_damp.set_rel_humidity(room.get_rel_humidity())
+        self.meas_reverberation_time = meas_reverberation_time
         self.calculate_reverberation_time()
 
     def calculate_Aeq(self):
@@ -358,11 +359,21 @@ class reverberationTime:
         # Calculate the reverberation time based on the optimized Sabine formula according to DIN EN ISO 354
         if self.air_damp_calc == True:
             # If air damping is considered, use the Sabine formula corrected by the speed of sound and air damping
-            self.reverberation_time = (55.3 / self.c) * (self.volume / (self.Aeq + 4 * self.volume * self.air_damp.calculate_coefficient()))
+            if self.meas_reverberation_time is not None:
+                # If measured reverberation time is provided, use the calculated equivalent sound absorption area to correct the measured reverberation time
+                Aeq_meas = ((55.3 / self.c) * (self.volume / (self.meas_reverberation_time))) - 4 * self.volume * self.air_damp.calculate_coefficient()
+                self.reverberation_time = (55.3 / self.c) * (self.volume / (self.Aeq + Aeq_meas + 4 * self.volume * self.air_damp.calculate_coefficient()))
+            else:
+                self.reverberation_time = (55.3 / self.c) * (self.volume / (self.Aeq + 4 * self.volume * self.air_damp.calculate_coefficient()))
 
         if self.air_damp_calc == False:
             # If air damping is not considered, use the standard Sabine formula corrected by the speed of sound
-            self.reverberation_time = (55.3 * self.volume) / (self.Aeq * self.c)
+            if self.meas_reverberation_time is not None:
+                # If measured reverberation time is provided, use the calculated equivalent sound absorption area to correct the measured reverberation time
+                Aeq_meas = (55.3 * self.volume) / (self.meas_reverberation_time * self.c)
+                self.reverberation_time = (55.3 * self.volume) / ((self.Aeq + Aeq_meas) * self.c)
+            else:
+                self.reverberation_time = (55.3 * self.volume) / (self.Aeq * self.c)
 
 
 
