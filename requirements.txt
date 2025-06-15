@@ -66,3 +66,4 @@ websocket-client==1.8.0
 Werkzeug==3.0.6
 wsproto==1.2.0
 zipp==3.21.0
+gunicorn
