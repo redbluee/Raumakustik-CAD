@@ -44,7 +44,7 @@ layout = dbc.Container(
     [
         dbc.Row(
             [
-                dbc.Col([html.H1("Reverberation Optimization - Test autodeploy", className="app-brand")]),
+                dbc.Col([html.H1("Reverberation Optimization", className="app-brand")]),
             ]
         ),
         dbc.Row(
