@@ -301,9 +301,9 @@ class surface:
 
 
 
-class reverberationTime:
+class reverberation_time:
     """
-    Defines a "reverberationTime" object that calculates the reverberation time of a room based on the extended Sabine formula from DIN EN ISO 354.
+    Defines a "reverberation_time" object that calculates the reverberation time of a room based on the extended Sabine formula from DIN EN ISO 354.
 
     Attributes
     ----------
@@ -311,7 +311,7 @@ class reverberationTime:
         The room for which the reverberation time is calculated, which is an instance of the room class
     surfaces : list
         A list of surfaces in the room, each of which is an instance of the surface class
-    frequencyBands : list
+    frequency_bands : list
         A list of frequency bands in Hz for which the reverberation time is calculated
     air_damp_calc : bool, optional
         A flag indicating whether air damping is considered in the calculation (default is True)
@@ -336,14 +336,14 @@ class reverberationTime:
     
     def __init__(self, room, surfaces, air_damp_calc=True, meas_reverberation_time=None):
         self.room = room
-        self.frequencyBands = (63, 125, 250, 500, 1000, 2000, 4000, 8000)
+        self.frequency_bands = (63, 125, 250, 500, 1000, 2000, 4000, 8000)
         self.surfaces = surfaces
         self.calculate_Aeq()
         self.c = room.get_c()
         #self.materials = surfaces.materials
         self.volume = room.volume
         self.air_damp_calc = air_damp_calc
-        self.air_damp = air_damp(self.frequencyBands)
+        self.air_damp = air_damp(self.frequency_bands)
         self.air_damp.set_temperature(room.get_temperature())
         self.air_damp.set_pressure(room.get_pressure())
         self.air_damp.set_rel_humidity(room.get_rel_humidity())
