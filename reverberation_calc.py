@@ -86,9 +86,9 @@ class room:
 
 
 
-class airDamp:
+class air_damp:
     """
-    Defines an "airDamp" object that calculates the sound absorption coefficient m in 1/m of air based on frequency, temperature, humidity, and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.
+    Defines an "air_damp" object that calculates the sound absorption coefficient m in 1/m of air based on frequency, temperature, humidity, and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.
 
     Parameters
     ----------
@@ -301,9 +301,9 @@ class surface:
 
 
 
-class reverberationTime:
+class reverberation_time:
     """
-    Defines a "reverberationTime" object that calculates the reverberation time of a room based on the extended Sabine formula from DIN EN ISO 354.
+    Defines a "reverberation_time" object that calculates the reverberation time of a room based on the extended Sabine formula from DIN EN ISO 354.
 
     Attributes
     ----------
@@ -311,7 +311,7 @@ class reverberationTime:
         The room for which the reverberation time is calculated, which is an instance of the room class
     surfaces : list
         A list of surfaces in the room, each of which is an instance of the surface class
-    frequencyBands : list
+    frequency_bands : list
         A list of frequency bands in Hz for which the reverberation time is calculated
     air_damp_calc : bool, optional
         A flag indicating whether air damping is considered in the calculation (default is True)
@@ -321,8 +321,8 @@ class reverberationTime:
         The speed of sound in air in meters per second, calculated based on the room's temperature and pressure
     volume : float
         The volume of the room in cubic meters
-    air_damp : airDamp
-        An instance of the airDamp class that calculates the sound absorption coefficient of air based on frequency, temperature, humidity, and pressure
+    air_damp : air_damp
+        An instance of the air_damp class that calculates the sound absorption coefficient of air based on frequency, temperature, humidity, and pressure
     reverberation_time : list
         The calculated reverberation time of the room in seconds
 
@@ -334,16 +334,16 @@ class reverberationTime:
         Calculates the reverberation time of the room based on the extended Sabine formula, considering air damping if specified.
     """
     
-    def __init__(self, room, surfaces, frequencyBands, air_damp_calc=True, meas_reverberation_time=None):
+    def __init__(self, room, surfaces, air_damp_calc=True, meas_reverberation_time=None):
         self.room = room
-        self.frequencyBands = frequencyBands
+        self.frequency_bands = (63, 125, 250, 500, 1000, 2000, 4000, 8000)
         self.surfaces = surfaces
         self.calculate_Aeq()
         self.c = room.get_c()
         #self.materials = surfaces.materials
         self.volume = room.volume
         self.air_damp_calc = air_damp_calc
-        self.air_damp = airDamp(frequencyBands)
+        self.air_damp = air_damp(self.frequency_bands)
         self.air_damp.set_temperature(room.get_temperature())
         self.air_damp.set_pressure(room.get_pressure())
         self.air_damp.set_rel_humidity(room.get_rel_humidity())
@@ -351,8 +351,13 @@ class reverberationTime:
         self.calculate_reverberation_time()
 
     def calculate_Aeq(self):
-        # Calculate the equivalent sound absorption area (Aeq)
-        self.Aeq = sum(surface.get_area() * surface.get_material().get_absorption_coefficient() for surface in self.surfaces)
+        coeffs = np.array([surface.get_material().get_absorption_coefficient() for surface in self.surfaces])
+        areas = np.array([surface.get_area() for surface in self.surfaces])
+        Aeq_octave = coeffs * areas[:, np.newaxis]
+        Aeq = np.nansum(Aeq_octave, axis=0)
+        nan_mask = np.isnan(Aeq_octave).any(axis=0)
+        Aeq[nan_mask] = np.nan
+        self.Aeq = Aeq
         return self.Aeq
 
     def calculate_reverberation_time(self):
