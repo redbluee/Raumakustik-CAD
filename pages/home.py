@@ -336,6 +336,18 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
     Input("input_room_height", "value"),
 )
 def update_graph(room_usage, switch_value, volume, temp, height):
+    """
+    Update the graph based on user inputs.
+    Args:
+        room_usage (str): Selected room usage type.
+        switch_value (bool): State of the toggle switch.
+        volume (float): Room volume in cubic meters.
+        temp (float): Room temperature in degrees Celsius.
+        height (float): Room height in meters.
+    Returns:
+        fig (plotly.graph_objects.Figure): Updated figure with new data.
+    """
+    
     title = (
         f"Nutzung: {room_usage}, Switch: {switch_value}, "
         f"Vol: {volume}, Temp: {temp}, Höhe: {height}"
