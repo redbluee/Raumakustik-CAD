@@ -5,8 +5,11 @@ import dash_bootstrap_components as dbc
 
 import pandas as pd
 import plotly.express as px
+import os
 
-dash.register_page(__name__, path="/", name="Home", title="Reverbation | Home")
+
+if not os.environ.get("SPHINX_BUILD"):
+    dash.register_page(__name__, path="/", name="Home", title="Reverbation | Home")
 
 
 # Define Dropdown Data
@@ -267,17 +270,27 @@ def add_row_to_flächen_tabelle(n_clicks, rows):
 )
 def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_data):
     """
-    Handle interactions with the main table, including opening the modal
-    and deleting rows.
-    Args:
-        active_cell (dict): The currently active cell in the table.
-        close_clicks (int): Number of clicks on the close button.
-        modal_is_open (bool): Current state of the modal.
-        table_data (list): Current data in the table.
-    Returns:
-        new_modal_state (bool): Updated state of the modal.
-        new_modal_content (dash_html_components.Component): Content to display in the modal.
-        new_table_data (list): Updated data for the table after deletion.
+    Handle interactions with the main table, including opening the modal and deleting rows.
+
+    Parameters
+    ----------
+    active_cell : dict
+        The currently active cell in the table.
+    close_clicks : int
+        Number of clicks on the close button.
+    modal_is_open : bool
+        Current state of the modal.
+    table_data : list
+        Current data in the table.
+
+    Returns
+    -------
+    new_modal_state : bool
+        Updated state of the modal.
+    new_modal_content : dash_html_components.Component
+        Content to display in the modal.
+    new_table_data : list
+        Updated data for the table after deletion.
     """
     
     
@@ -353,14 +366,24 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
 def update_graph(room_usage, switch_value, volume, temp, height):
     """
     Update the graph based on user inputs.
-    Args:
-        room_usage (str): Selected room usage type.
-        switch_value (bool): State of the toggle switch.
-        volume (float): Room volume in cubic meters.
-        temp (float): Room temperature in degrees Celsius.
-        height (float): Room height in meters.
-    Returns:
-        fig (plotly.graph_objects.Figure): Updated figure with new data.
+
+    Parameters
+    ----------
+    room_usage : str
+        Selected room usage type.
+    switch_value : bool
+        State of the toggle switch.
+    volume : float
+        Room volume in cubic meters.
+    temp : float
+        Room temperature in degrees Celsius.
+    height : float
+        Room height in meters.
+
+    Returns
+    -------
+    fig : plotly.graph_objects.Figure
+        Updated figure with new data.
     """
     
     title = (
