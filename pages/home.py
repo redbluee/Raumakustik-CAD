@@ -266,6 +266,21 @@ def add_row_to_flächen_tabelle(n_clicks, rows):
     prevent_initial_call=True
 )
 def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_data):
+    """
+    Handle interactions with the main table, including opening the modal
+    and deleting rows.
+    Args:
+        active_cell (dict): The currently active cell in the table.
+        close_clicks (int): Number of clicks on the close button.
+        modal_is_open (bool): Current state of the modal.
+        table_data (list): Current data in the table.
+    Returns:
+        new_modal_state (bool): Updated state of the modal.
+        new_modal_content (dash_html_components.Component): Content to display in the modal.
+        new_table_data (list): Updated data for the table after deletion.
+    """
+    
+    
     ctx = dash.callback_context
     triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
