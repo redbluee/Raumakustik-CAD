@@ -25,6 +25,10 @@ jobs:
           cd docs
           make html
 
+      - name: Disable Jekyll on GitHub Pages
+        run: |
+          touch docs/_build/html/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
