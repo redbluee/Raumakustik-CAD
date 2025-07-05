@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API Reference &#8212; RoomAcousticWizard  documentation</title>
+    <title>calculation backend &#8212; RoomAcousticWizard  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
@@ -16,8 +16,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="GUI Reference" href="gui.html" />
-    <link rel="prev" title="RoomAcousticWizard documentation" href="index.html" />
+    <link rel="prev" title="graphical user interface" href="gui.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -35,9 +34,10 @@
 
           <div class="body" role="main">
             
-  <section id="module-reverberation_calc">
-<span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-reverberation_calc" title="Link to this heading">¶</a></h1>
-<dl class="py class">
+  <section id="calculation-backend">
+<h1>calculation backend<a class="headerlink" href="#calculation-backend" title="Link to this heading">¶</a></h1>
+<p>This module provides the core functionality for calculating reverberation times in rooms according to the DIN 18041 standard. It includes methods for calculating the reverberation time based on room dimensions, surface materials, and other acoustic properties.</p>
+<dl class="py class" id="module-reverberation_calc">
 <dt class="sig sig-object py" id="reverberation_calc.DIN_18041_limits">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">reverberation_calc.</span></span><span class="sig-name descname"><span class="pre">DIN_18041_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_room</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reverberation_calc.html#DIN_18041_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reverberation_calc.DIN_18041_limits" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -975,24 +975,97 @@ The equivalent sound absorption area is calculated as the sum of the product of 
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.air_damp"><code class="docutils literal notranslate"><span class="pre">air_damp</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.material"><code class="docutils literal notranslate"><span class="pre">material</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.reverberation_time"><code class="docutils literal notranslate"><span class="pre">reverberation_time</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.room"><code class="docutils literal notranslate"><span class="pre">room</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.surface"><code class="docutils literal notranslate"><span class="pre">surface</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">graphical user interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">calculation backend</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.room"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.room</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.volume"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.volume</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.c"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.c</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.type"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.T_soll"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.T_soll</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.T_upper_limit"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.T_upper_limit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.T_lower_limit"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.T_lower_limit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.DIN_18041_limits.get_limits"><code class="docutils literal notranslate"><span class="pre">DIN_18041_limits.get_limits()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gui.html">GUI Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.air_damp"><code class="docutils literal notranslate"><span class="pre">air_damp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.calculate_abs_humidity"><code class="docutils literal notranslate"><span class="pre">air_damp.calculate_abs_humidity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.calculate_coefficient"><code class="docutils literal notranslate"><span class="pre">air_damp.calculate_coefficient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.get_temperature"><code class="docutils literal notranslate"><span class="pre">air_damp.get_temperature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.set_frequency"><code class="docutils literal notranslate"><span class="pre">air_damp.set_frequency()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.set_pressure"><code class="docutils literal notranslate"><span class="pre">air_damp.set_pressure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.set_ref_pressure"><code class="docutils literal notranslate"><span class="pre">air_damp.set_ref_pressure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.set_rel_humidity"><code class="docutils literal notranslate"><span class="pre">air_damp.set_rel_humidity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.air_damp.set_temperature"><code class="docutils literal notranslate"><span class="pre">air_damp.set_temperature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.material"><code class="docutils literal notranslate"><span class="pre">material</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.name"><code class="docutils literal notranslate"><span class="pre">material.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.absorption_coefficient"><code class="docutils literal notranslate"><span class="pre">material.absorption_coefficient</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.price"><code class="docutils literal notranslate"><span class="pre">material.price</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.get_absorption_coefficient"><code class="docutils literal notranslate"><span class="pre">material.get_absorption_coefficient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.get_name"><code class="docutils literal notranslate"><span class="pre">material.get_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.get_price"><code class="docutils literal notranslate"><span class="pre">material.get_price()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.set_absorption_coefficient"><code class="docutils literal notranslate"><span class="pre">material.set_absorption_coefficient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.set_name"><code class="docutils literal notranslate"><span class="pre">material.set_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.material.set_price"><code class="docutils literal notranslate"><span class="pre">material.set_price()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.reverberation_time"><code class="docutils literal notranslate"><span class="pre">reverberation_time</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.calc_room"><code class="docutils literal notranslate"><span class="pre">reverberation_time.calc_room</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.surfaces"><code class="docutils literal notranslate"><span class="pre">reverberation_time.surfaces</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.frequency_bands"><code class="docutils literal notranslate"><span class="pre">reverberation_time.frequency_bands</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.air_damp_calc"><code class="docutils literal notranslate"><span class="pre">reverberation_time.air_damp_calc</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.Aeq"><code class="docutils literal notranslate"><span class="pre">reverberation_time.Aeq</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.c"><code class="docutils literal notranslate"><span class="pre">reverberation_time.c</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.volume"><code class="docutils literal notranslate"><span class="pre">reverberation_time.volume</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.air_damp"><code class="docutils literal notranslate"><span class="pre">reverberation_time.air_damp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.reverberation_time"><code class="docutils literal notranslate"><span class="pre">reverberation_time.reverberation_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.calculate_Aeq"><code class="docutils literal notranslate"><span class="pre">reverberation_time.calculate_Aeq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.reverberation_time.calculate_reverberation_time"><code class="docutils literal notranslate"><span class="pre">reverberation_time.calculate_reverberation_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.room"><code class="docutils literal notranslate"><span class="pre">room</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.volume"><code class="docutils literal notranslate"><span class="pre">room.volume</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.temperature"><code class="docutils literal notranslate"><span class="pre">room.temperature</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.pressure"><code class="docutils literal notranslate"><span class="pre">room.pressure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.rel_humidity"><code class="docutils literal notranslate"><span class="pre">room.rel_humidity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.height"><code class="docutils literal notranslate"><span class="pre">room.height</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.c"><code class="docutils literal notranslate"><span class="pre">room.c</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_c"><code class="docutils literal notranslate"><span class="pre">room.get_c()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_height"><code class="docutils literal notranslate"><span class="pre">room.get_height()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_pressure"><code class="docutils literal notranslate"><span class="pre">room.get_pressure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_rel_humidity"><code class="docutils literal notranslate"><span class="pre">room.get_rel_humidity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_temperature"><code class="docutils literal notranslate"><span class="pre">room.get_temperature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.get_volume"><code class="docutils literal notranslate"><span class="pre">room.get_volume()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.set_height"><code class="docutils literal notranslate"><span class="pre">room.set_height()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.set_pressure"><code class="docutils literal notranslate"><span class="pre">room.set_pressure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.set_rel_humidity"><code class="docutils literal notranslate"><span class="pre">room.set_rel_humidity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.set_temperature"><code class="docutils literal notranslate"><span class="pre">room.set_temperature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.room.set_volume"><code class="docutils literal notranslate"><span class="pre">room.set_volume()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reverberation_calc.surface"><code class="docutils literal notranslate"><span class="pre">surface</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.name"><code class="docutils literal notranslate"><span class="pre">surface.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.area"><code class="docutils literal notranslate"><span class="pre">surface.area</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.material"><code class="docutils literal notranslate"><span class="pre">surface.material</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.get_area"><code class="docutils literal notranslate"><span class="pre">surface.get_area()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.get_material"><code class="docutils literal notranslate"><span class="pre">surface.get_material()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.get_surface_name"><code class="docutils literal notranslate"><span class="pre">surface.get_surface_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.set_area"><code class="docutils literal notranslate"><span class="pre">surface.set_area()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.set_material"><code class="docutils literal notranslate"><span class="pre">surface.set_material()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reverberation_calc.surface.set_surface_name"><code class="docutils literal notranslate"><span class="pre">surface.set_surface_name()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">RoomAcousticWizard documentation</a></li>
-      <li>Next: <a href="gui.html" title="next chapter">GUI Reference</a></li>
+      <li>Previous: <a href="gui.html" title="previous chapter">graphical user interface</a></li>
   </ul></li>
 </ul>
 </div>

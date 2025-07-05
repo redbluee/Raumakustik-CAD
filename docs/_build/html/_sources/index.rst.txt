@@ -14,5 +14,5 @@ This documentation provides an overview of the internal code from RoomAcousticWi
    :maxdepth: 3
    :caption: Contents:
 
-   api
    gui
+   api

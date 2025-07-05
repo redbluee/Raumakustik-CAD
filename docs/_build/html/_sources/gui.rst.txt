@@ -1,4 +1,4 @@
-GUI Reference
+graphical user interface
 =============
 
 .. automodule:: pages.home
