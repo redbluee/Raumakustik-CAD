@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>reverberation_calc &#8212; Reverberation Optimizer  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for reverberation_calc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<div class="viewcode-block" id="room">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">room</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a &quot;room&quot; object with properties such as volume, temperature, pressure, relative humidity, and speed of sound.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    volume : int or float</span>
+<span class="sd">        The volume of the room in m².</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    volume : int or float</span>
+<span class="sd">        The volume of the room in m².</span>
+<span class="sd">    temperature : int or float</span>
+<span class="sd">        The temperature of the room in °C (default is 20 °C).</span>
+<span class="sd">    pressure : int or float</span>
+<span class="sd">        The pressure of the room in kPa (default is 101.325 kPa).</span>
+<span class="sd">    rel_humidity : int or float</span>
+<span class="sd">        The relative humidity of the room in % (default is 50 %).</span>
+<span class="sd">    height : int or float or None</span>
+<span class="sd">        The height of the room in m (default is None).</span>
+<span class="sd">    c : int or float</span>
+<span class="sd">        The speed of sound in air in m/s, calculated based on temperature and relative humidity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a room object with a specified volume and default values for temperature, pressure, relative humidity, and speed of sound.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        volume : int or float </span>
+<span class="sd">            The volume of the room in m².</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the volume is not a number.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the volume is not positive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Volume must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Volume must be a positive value.&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="mi">20</span>           <span class="c1"># Celsius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="mf">101.325</span>         <span class="c1"># kPa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span> <span class="o">=</span> <span class="mi">50</span>          <span class="c1"># percentage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># meters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_c</span><span class="p">()</span>           <span class="c1"># Speed of sound in air in m/s</span>
+
+<div class="viewcode-block" id="room.set_height">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.set_height">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the height of the room in m.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        height : int or float</span>
+<span class="sd">            The height of the room in m.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the height is not a number.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the height is not positive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Height must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Height must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span></div>
+
+
+<div class="viewcode-block" id="room.get_height">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_height">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the height of the room in m.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or None</span>
+<span class="sd">            The height of the room in m.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span></div>
+
+
+<div class="viewcode-block" id="room.set_volume">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.set_volume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the volume of the room in m².</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        volume : int or float</span>
+<span class="sd">        The volume of the room in m².</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the volume is not an integer.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the volume is not a positive integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Volume must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Volume must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span></div>
+
+
+<div class="viewcode-block" id="room.get_volume">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_volume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the volume of the room in m².</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The volume of the room in m².</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span></div>
+
+    
+<div class="viewcode-block" id="room.set_temperature">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.set_temperature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the temperature of the room in °C.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        temperature : int or float</span>
+<span class="sd">            The temperature of the room in °C.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the temperature is not an integer or float.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the temperature is not a positive integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Temperature must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temperature</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>                                             <span class="c1"># Anschauen in ISO!!!</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Temperature must be .&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span></div>
+
+
+<div class="viewcode-block" id="room.get_temperature">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_temperature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the temperature of the room in °C.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The temperature of the room in °C.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span></div>
+
+    
+<div class="viewcode-block" id="room.set_pressure">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.set_pressure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the pressure of the room in kPa.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pressure : int or float</span>
+<span class="sd">            The pressure of the room in kPa.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the pressure is not an integer or float.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the pressure is not a positive integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Pressure must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pressure</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Pressure must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span></div>
+
+
+<div class="viewcode-block" id="room.get_pressure">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_pressure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the pressure of the room in kPa.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The pressure of the room in kPA.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span></div>
+
+    
+<div class="viewcode-block" id="room.set_rel_humidity">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.set_rel_humidity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_rel_humidity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_humidity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the relative humidity of the room in %.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rel_humidity : int or float</span>
+<span class="sd">            The relative humidity of the room in %.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the relative humidity is not an integer or float.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the relative humidity is not in the range of 0 % - 100 %.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rel_humidity</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Relative humidity must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rel_humidity</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">rel_humidity</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Relative humidity must be between 0 and 100 %.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span> <span class="o">=</span> <span class="n">rel_humidity</span></div>
+
+
+<div class="viewcode-block" id="room.get_rel_humidity">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_rel_humidity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_rel_humidity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the relative humidity of the room in %.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The relative humidity of the room in %.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span></div>
+
+    
+<div class="viewcode-block" id="room.get_c">
+<a class="viewcode-back" href="../api.html#reverberation_calc.room.get_c">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the speed of sound in air based on the current temperature and relative humidity according to DIN EN ISO 354.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The speed of sound in air in m/s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mf">331.6</span> <span class="o">+</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temperature</span><span class="p">())</span><span class="c1"># * (1 + (self.get_rel_humidity() / 100)) ** 0.5 # automatisch ausgefüllt, kp wieso</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="air_damp">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">air_damp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines an &quot;air_damp&quot; object that calculates the sound absorption coefficient m in 1/m of air based on frequency, temperature, humidity, and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frequency : list</span>
+<span class="sd">        A list of frequencies in Hz for which the sound absorption coefficient is calculated.</span>
+<span class="sd">    pressure : int or float, optional</span>
+<span class="sd">        The pressure in kPa (default is 101.325 kPa).</span>
+<span class="sd">    ref_pressure : int or float, optional</span>
+<span class="sd">        The reference pressure in kPa (default is 101.325 kPa).</span>
+<span class="sd">    rel_humidity : int or float, optional</span>
+<span class="sd">        The relative humidity in % (default is 50 %).</span>
+<span class="sd">    abs_humidity : int or float, optional</span>
+<span class="sd">        The absolute humidity as molar conentration of water vapour in air in % according to ISO 9613-1 Annex B.</span>
+<span class="sd">    temperature : int or float, optional</span>
+<span class="sd">        The temperature in Celsius (default is 20°C).</span>
+<span class="sd">    ref_temperature : int or float, optional</span>
+<span class="sd">        The reference temperature in Kelvin (default is 293.15 °K, which is 20 °C).</span>
+<span class="sd">    alpha : list</span>
+<span class="sd">        A list of sound absorption coefficients in dB/m, calculated based on the frequency, temperature, humidity and pressure.</span>
+<span class="sd">    m : list</span>
+<span class="sd">        A list of sound absorption coefficients in 1/m, calculated from alpha.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes an air_damp object with a specified frequency and default values for pressure, relative humidity, temperature, and reference temperature.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frequency : list of int or float</span>
+<span class="sd">            A list of frequencies in Hz for which the sound absorption coefficient is calculated.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the frequency is not a list.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency is not a list or if it contains non-numeric values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency list is empty.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency list contains negative values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Frequency must be a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency must be a list of numeric values.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency list cannot be empty.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency values must be non-negative.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="mf">101.325</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_pressure</span> <span class="o">=</span> <span class="mf">101.325</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span> <span class="o">=</span> <span class="mi">50</span>          <span class="c1"># percentage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="mi">20</span>           <span class="c1"># Celsius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_temperature</span> <span class="o">=</span> <span class="mf">293.15</span>   <span class="c1"># Kelvin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_abs_humidity</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_coefficient</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="air_damp.set_frequency">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.set_frequency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the frequency in Hz for which the sound absorption coefficient is calculated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frequency : list of int or float</span>
+<span class="sd">            A list of frequencies in Hz.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the frequency is not a list.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency is not a list or if it contains non-numeric values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency list is empty.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the frequency list contains negative values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Frequency must be a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency must be a list of numeric values.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency list cannot be empty.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency values must be non-negative.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>    </div>
+
+
+<div class="viewcode-block" id="air_damp.set_pressure">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.set_pressure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pressure</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the pressure in kPa for the sound absorption coefficient calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pressure : int or float</span>
+<span class="sd">            The pressure in kPa.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the pressure is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the pressure is not a positive numeric value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Pressure must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pressure</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Pressure must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span></div>
+
+    
+<div class="viewcode-block" id="air_damp.set_temperature">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.set_temperature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the temperature in Celsius for the sound absorption coefficient calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        temperature : int or float</span>
+<span class="sd">            The temperature in °C.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the temperature is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the temperature is not above absolute zero (-273.15 °C).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Temperature must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temperature</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">273.15</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Temperature must be above absolute zero (-273.15 °C).&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span> <span class="o">+</span> <span class="mf">273.15</span></div>
+
+
+<div class="viewcode-block" id="air_damp.get_temperature">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.get_temperature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the temperature in °C.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The temperature in °C.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">-</span> <span class="mf">273.15</span></div>
+
+    
+<div class="viewcode-block" id="air_damp.set_rel_humidity">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.set_rel_humidity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_rel_humidity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_humidity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the relative humidity in % for the sound absorption coefficient calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rel_humidity : int or float</span>
+<span class="sd">            The relative humidity in %.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the relative humidity is not an integer or float.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the relative humidity is not in the range of 0 % - 100 %.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rel_humidity</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Relative humidity must be an integer or float.&quot;</span><span class="p">)</span>  
+        <span class="k">if</span> <span class="n">rel_humidity</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">rel_humidity</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Relative humidity must be between 0 and 100 %.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span> <span class="o">=</span> <span class="n">rel_humidity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_abs_humidity</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="air_damp.calculate_abs_humidity">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.calculate_abs_humidity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_abs_humidity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the absolute humidity based on the relative humidity, pressure, and temperature.</span>
+<span class="sd">        The absolute humidity is calculated as the molar concentration of water vapor in air according to ISO 9613-1 Annex B.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abs_humidity</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_humidity</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">6.8346</span> <span class="o">*</span> <span class="p">((</span><span class="mf">273.16</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">))</span><span class="o">**</span><span class="mf">1.261</span><span class="p">)</span> <span class="o">+</span> <span class="mf">4.6151</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">/</span> <span class="mf">101.325</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="air_damp.set_ref_pressure">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.set_ref_pressure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_ref_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_pressure</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the reference pressure in kPa for the sound absorption coefficient calculation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ref_pressure : int or float</span>
+<span class="sd">            The reference pressure in kPa.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the reference pressure is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the reference pressure is not a positive numeric value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_pressure</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Reference pressure must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ref_pressure</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Reference pressure must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_pressure</span> <span class="o">=</span> <span class="n">ref_pressure</span></div>
+
+
+<div class="viewcode-block" id="air_damp.calculate_coefficient">
+<a class="viewcode-back" href="../api.html#reverberation_calc.air_damp.calculate_coefficient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the sound absorption coefficient m in 1/m and alpha in dB/m of air based on frequency, temperature, humidity and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            The sound absorption coefficient m in 1/m.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If temperature, relative humidity or pressure is not set before calculating the coefficient.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;temperature&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Temperature must be set before calculating coefficient.&quot;</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;rel_humidity&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Relative humidity must be set before calculating coefficient.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;pressure&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Pressure must be set before calculating coefficient.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">))</span>
+            <span class="n">f_rO</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_pressure</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">24.0</span><span class="o">+</span><span class="mf">4.04</span><span class="o">*</span><span class="p">(</span><span class="mf">10.0</span><span class="o">**</span><span class="mf">4.0</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">abs_humidity</span><span class="o">*</span><span class="p">((</span><span class="mf">0.02</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">abs_humidity</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">0.391</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">abs_humidity</span><span class="p">)))</span>
+            <span class="n">f_rN</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_pressure</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_temperature</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)))</span><span class="o">*</span><span class="p">(</span><span class="mf">9.0</span><span class="o">+</span><span class="mf">280.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">abs_humidity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">4.170</span><span class="o">*</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_temperature</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)))</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">):</span>
+                <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">8.686</span><span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="mf">1.84</span><span class="o">*</span><span class="p">(</span><span class="mf">10.0</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">11.0</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_pressure</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_temperature</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)))</span><span class="o">+</span>
+                                 <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_temperature</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span><span class="o">*</span>
+                                 <span class="p">(</span><span class="mf">0.01275</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2239.1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">f_rO</span><span class="o">+</span><span class="p">((</span><span class="n">f</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">f_rO</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">))</span><span class="o">+</span>
+                                  <span class="mf">0.1068</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">3352.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">f_rN</span><span class="o">+</span><span class="p">((</span><span class="n">f</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">f_rN</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">))))</span><span class="c1"># dB/m</span>
+
+            <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="mi">4350</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="k">return</span> <span class="n">m</span></div>
+</div>
+
+    
+
+        
+<div class="viewcode-block" id="material">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">material</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a &quot;material&quot; object with properties such as name, absorption coefficient(, and price).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the material.</span>
+<span class="sd">    absorption_coefficient : list</span>
+<span class="sd">        The absorption coefficient of the material at different frequencies.</span>
+<span class="sd">    price : int or float, optional</span>
+<span class="sd">        The price of the material as €/m² (default is None).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a material object with a specified name and absorption coefficient.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the material.</span>
+<span class="sd">        absorption_coefficient : list of float</span>
+<span class="sd">            A list of absorption coefficients at different frequencies.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the name is not a string or if the absorption coefficient is not a list.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient is not a list or if it contains non-numeric values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list is empty.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list contains negative values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list does not contain exactly 8 values for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Name must be a string.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient must be a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient must be a list of numeric values.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient list cannot be empty.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">ac</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient values must be non-negative.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient list must contain exactly 8 values for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">absorption_coefficient</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">)</span>
+        <span class="c1"># self.frequency_weight = self.get_frequency_weight()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="material.set_absorption_coefficient">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.set_absorption_coefficient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_absorption_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the absorption coefficient of the material.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        absorption_coefficient : list of float</span>
+<span class="sd">            A list of absorption coefficients at different frequencies.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the absorption coefficient is not a list.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient is not a list or if it contains non-numeric values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list is empty.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list contains negative values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the absorption coefficient list does not contain exactly 8 values for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient must be a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient must be a list of numeric values.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient list cannot be empty.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">ac</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="n">absorption_coefficient</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient values must be non-negative.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">absorption_coefficient</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Absorption coefficient list must contain exactly 8 values for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">absorption_coefficient</span> <span class="o">=</span> <span class="n">absorption_coefficient</span></div>
+
+
+<div class="viewcode-block" id="material.get_absorption_coefficient">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.get_absorption_coefficient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_absorption_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the absorption coefficient of the material.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            The absorption coefficient of the material at different frequencies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">absorption_coefficient</span></div>
+
+    
+<div class="viewcode-block" id="material.set_name">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.set_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the name of the material.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the material.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the name is not a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Name must be a string.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="material.get_name">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.get_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the name of the material.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The name of the material if it has been set, otherwise returns None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+    
+<div class="viewcode-block" id="material.set_price">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.set_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the price of the material.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        price : int or float</span>
+<span class="sd">            The price of the material in €/m².</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the price is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the price is not a positive numeric value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Price must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">price</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Price must be a non-negative value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">price</span></div>
+
+
+<div class="viewcode-block" id="material.get_price">
+<a class="viewcode-back" href="../api.html#reverberation_calc.material.get_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the price of the material in €/m² if it has been set.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or None</span>
+<span class="sd">            The price of the material in €/m² if it has been set, otherwise returns None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
+</div>
+
+    
+    <span class="c1"># def get_frequency_weight(self):</span>
+    <span class="c1">#     # Berechnung der Gewichtung einzelner Frequenzbänder</span>
+    <span class="c1">#     # Platzhalter für die Frequenzgewichtung</span>
+    <span class="c1">#     return self.frequency_weight</span>
+    
+
+
+<div class="viewcode-block" id="surface">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">surface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a &quot;surface&quot; object with properties such as name, area, and material.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the surface.</span>
+<span class="sd">    area : int or float</span>
+<span class="sd">        The area of the surface in m².</span>
+<span class="sd">    material : material</span>
+<span class="sd">        The material of the surface, which is an instance of the material class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">material</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a surface object with a specified name, area, and material.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the surface.</span>
+<span class="sd">        area : int or float</span>
+<span class="sd">            The area of the surface in m².</span>
+<span class="sd">        material : material </span>
+<span class="sd">            The material of the surface, which is an instance of the material class.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the name is not a string or if the area is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the area is not a positive numeric value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Name must be a string.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Area must be an integer or float.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">material</span>
+
+<div class="viewcode-block" id="surface.set_area">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.set_area">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the area of the surface.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        area : int or float</span>
+<span class="sd">            The area of the surface in m².</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the area is not a numeric value.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the area is not a positive numeric value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Area must be a numeric value.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">area</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Area must be a positive value.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">area</span></div>
+
+
+<div class="viewcode-block" id="surface.get_area">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.get_area">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the area of the surface.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The area of the surface in m².</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span></div>
+
+    
+<div class="viewcode-block" id="surface.set_material">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.set_material">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_material</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">material</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the material of the surface.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        material : material</span>
+<span class="sd">            The material of the surface, which is an instance of the material class.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the material is not an instance of the material class.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the material does not have an absorption coefficient defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="n">material</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Material must be an instance of the material class.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="s1">&#39;absorption_coefficient&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Material must have an absorption coefficient defined.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">material</span></div>
+
+
+<div class="viewcode-block" id="surface.get_material">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.get_material">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_material</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the material of the surface.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        material</span>
+<span class="sd">            The material of the surface, which is an instance of the material class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span></div>
+
+    
+<div class="viewcode-block" id="surface.set_surface_name">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.set_surface_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_surface_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the name of the surface.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the surface.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the name is not a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Name must be a string.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="surface.get_surface_name">
+<a class="viewcode-back" href="../api.html#reverberation_calc.surface.get_surface_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_surface_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the name of the surface if it has been set.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str or None</span>
+<span class="sd">            The name of the surface if it has been set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="reverberation_time">
+<a class="viewcode-back" href="../api.html#reverberation_calc.reverberation_time">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">reverberation_time</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a &quot;reverberation_time&quot; object that calculates the reverberation time of a room based on the extended Sabine formula from DIN EN ISO 354.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc_room : room</span>
+<span class="sd">        The room for which the reverberation time is calculated, which is an instance of the room class.</span>
+<span class="sd">    surfaces : list</span>
+<span class="sd">        A list of surfaces in the room, each of which is an instance of the surface class.</span>
+<span class="sd">    frequency_bands : list</span>
+<span class="sd">        A list of frequency bands in Hz for which the reverberation time is calculated.</span>
+<span class="sd">    air_damp_calc : bool, optional</span>
+<span class="sd">        A flag indicating whether air damping is considered in the calculation (default is True).</span>
+<span class="sd">    Aeq : int or float</span>
+<span class="sd">        The equivalent sound absorption area of the room in m², calculated based on the surfaces and their materials.</span>
+<span class="sd">    c : int or float</span>
+<span class="sd">        The speed of sound in air in m/s, calculated based on the room&#39;s temperature and pressure.</span>
+<span class="sd">    volume : int or float</span>
+<span class="sd">        The volume of the room in m³.</span>
+<span class="sd">    air_damp : air_damp</span>
+<span class="sd">        An instance of the air_damp class that calculates the sound absorption coefficient of air based on frequency, temperature, humidity, and pressure.</span>
+<span class="sd">    reverberation_time : list</span>
+<span class="sd">        The calculated reverberation time of the room in s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc_room</span><span class="p">,</span> <span class="n">surfaces</span><span class="p">,</span> <span class="n">air_damp_calc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">meas_reverberation_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a reverberation_time object with a specified room, surfaces, and optional parameters for air damping calculation and measured reverberation time.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        calc_room : room</span>
+<span class="sd">            The room for which the reverberation time is calculated, which is an instance of the room class.</span>
+<span class="sd">        surfaces : list of surface</span>
+<span class="sd">            A list of surfaces in the room, each of which is an instance of the surface class.</span>
+<span class="sd">        air_damp_calc : bool, optional</span>
+<span class="sd">            A flag indicating whether air damping is considered in the calculation (default is True).</span>
+<span class="sd">        meas_reverberation_time : list of int or float, optional</span>
+<span class="sd">            A list of measured reverberation times of the room in s (default is None).</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TalueError</span>
+<span class="sd">            If the room is not an instance of the room class.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the surfaces are not a list or if any surface is not an instance of the surface class.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the surfaces list is empty.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the air_damp_calc is not a boolean.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the measured reverberation time is not a list or if it contains non-numeric values.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the measured reverberation time list does not contain exactly 8 entries for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the measured reverberation time list is empty or if it contains negative values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_room</span><span class="p">,</span> <span class="n">room</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Room must be an instance of the room class.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surfaces</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Surfaces must be a list.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_surface</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span> <span class="k">for</span> <span class="n">calc_surface</span> <span class="ow">in</span> <span class="n">surfaces</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All surfaces must be instances of the surface class.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">surfaces</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Surfaces list cannot be empty.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">air_damp_calc</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Air damping calculation flag must be a boolean.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">meas_reverberation_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_reverberation_time</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Measured reverberation time must be a list.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mrt</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">mrt</span> <span class="ow">in</span> <span class="n">meas_reverberation_time</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Measured reverberation time must be a list of numeric values.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meas_reverberation_time</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Measured reverberation time must be a list containing 8 entries for the frequency bands 63, 125, 250, 500, 1000, 2000, 4000, and 8000 Hz.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meas_reverberation_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Measured reverberation time list cannot be empty.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">mrt</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">mrt</span> <span class="ow">in</span> <span class="n">meas_reverberation_time</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Measured reverberation time values must be non-negative.&quot;</span><span class="p">)</span>
+        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span> <span class="o">=</span> <span class="n">calc_room</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency_bands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">63</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span> <span class="o">=</span> <span class="n">surfaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_Aeq</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">calc_room</span><span class="o">.</span><span class="n">get_c</span><span class="p">()</span>
+        <span class="c1">#self.materials = surfaces.materials</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">calc_room</span><span class="o">.</span><span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">air_damp_calc</span> <span class="o">=</span> <span class="n">air_damp_calc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span> <span class="o">=</span> <span class="n">air_damp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency_bands</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">set_temperature</span><span class="p">(</span><span class="n">calc_room</span><span class="o">.</span><span class="n">get_temperature</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">set_pressure</span><span class="p">(</span><span class="n">calc_room</span><span class="o">.</span><span class="n">get_pressure</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">set_rel_humidity</span><span class="p">(</span><span class="n">calc_room</span><span class="o">.</span><span class="n">get_rel_humidity</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">meas_reverberation_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">meas_reverberation_time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate_reverberation_time</span><span class="p">()</span>
+
+<div class="viewcode-block" id="reverberation_time.calculate_Aeq">
+<a class="viewcode-back" href="../api.html#reverberation_calc.reverberation_time.calculate_Aeq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_Aeq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the equivalent sound absorption area (Aeq) in m² of the room based on the surfaces and their materials.</span>
+<span class="sd">        The equivalent sound absorption area is calculated as the sum of the product of the absorption coefficient and the area of each surface.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The equivalent sound absorption area of the room in m².</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any surface does not have a material with an absorption coefficient defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="s1">&#39;get_material&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">surface</span><span class="o">.</span><span class="n">get_material</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">surface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All surfaces must have a material with an absorption coefficient defined.&quot;</span><span class="p">)</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">surface</span><span class="o">.</span><span class="n">get_material</span><span class="p">()</span><span class="o">.</span><span class="n">get_absorption_coefficient</span><span class="p">()</span> <span class="k">for</span> <span class="n">surface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">])</span>
+        <span class="n">areas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">surface</span><span class="o">.</span><span class="n">get_area</span><span class="p">()</span> <span class="k">for</span> <span class="n">surface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">])</span>
+        <span class="n">Aeq_octave</span> <span class="o">=</span> <span class="n">coeffs</span> <span class="o">*</span> <span class="n">areas</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+        <span class="n">Aeq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">Aeq_octave</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">nan_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Aeq_octave</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">Aeq</span><span class="p">[</span><span class="n">nan_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span> <span class="o">=</span> <span class="n">Aeq</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span></div>
+
+
+<div class="viewcode-block" id="reverberation_time.calculate_reverberation_time">
+<a class="viewcode-back" href="../api.html#reverberation_calc.reverberation_time.calculate_reverberation_time">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_reverberation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the reverberation time of the room based on the extended Sabine formula, considering air damping if specified.</span>
+
+<span class="sd">        The reverberation time is calculated using the formula:</span>
+
+<span class="sd">        .. math:: </span>
+<span class="sd">        </span>
+<span class="sd">            T = \frac{55.3 \cdot V}{A_{eq} \cdot c}</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">        - :math:`T` is the reverberation time in s  </span>
+<span class="sd">        - :math:`V` is the volume of the room in m³  </span>
+<span class="sd">        - :math:`A_{eq}` is the equivalent sound absorption area in m²  </span>
+<span class="sd">        - :math:`c` is the speed of sound in air in m/s</span>
+
+<span class="sd">        If air damping is considered, the formula is corrected by the speed of sound and air damping:</span>
+
+<span class="sd">        .. math:: </span>
+<span class="sd">        </span>
+<span class="sd">            T = \frac{55.3}{c} \cdot \frac{V}{A_{eq} + 4 \cdot V \cdot m}</span>
+
+<span class="sd">        where :math:`m` is the sound absorption coefficient of air in 1/m, calculated based on frequency, temperature, humidity, and pressure according to EN ISO 354 and ISO 9613-1.</span>
+
+<span class="sd">        If a measured reverberation time is provided, its equivalent sound absorption area</span>
+
+<span class="sd">        .. math:: </span>
+<span class="sd">        </span>
+<span class="sd">            A_{eq, measured} = \frac{55.3 \cdot V}{T_{measured} \cdot c}</span>
+
+<span class="sd">        is used to specify initial values for the extension with additional sound absorption areas. The reverberation time is then calculated as:</span>
+
+<span class="sd">        .. math:: </span>
+<span class="sd">        </span>
+<span class="sd">            T = \frac{55.3 \cdot V}{(A_{eq} + A_{eq, measured}) \cdot c}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate the reverberation time based on the optimized Sabine formula according to DIN EN ISO 354</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">air_damp_calc</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># If air damping is considered, use the Sabine formula corrected by the speed of sound and air damping</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If measured reverberation time is provided, use the calculated equivalent sound absorption area to correct the measured reverberation time</span>
+                <span class="n">Aeq_meas</span> <span class="o">=</span> <span class="p">((</span><span class="mf">55.3</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">calculate_coefficient</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reverberation_time</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span> <span class="o">+</span> <span class="n">Aeq_meas</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">calculate_coefficient</span><span class="p">()))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reverberation_time</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">air_damp</span><span class="o">.</span><span class="n">calculate_coefficient</span><span class="p">()))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">air_damp_calc</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># If air damping is not considered, use the standard Sabine formula corrected by the speed of sound</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If measured reverberation time is provided, use the calculated equivalent sound absorption area to correct the measured reverberation time</span>
+                <span class="n">Aeq_meas</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_reverberation_time</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reverberation_time</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span> <span class="o">+</span> <span class="n">Aeq_meas</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reverberation_time</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Aeq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="DIN_18041_limits">
+<a class="viewcode-back" href="../api.html#reverberation_calc.DIN_18041_limits">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DIN_18041_limits</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a &quot;DIN_18041_limits&quot; object that calculates the limits for reverberation time according to DIN 18041 based on room type, volume, and height.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    room : room</span>
+<span class="sd">        The room for which the limits are calculated, which is an instance of the room class.</span>
+<span class="sd">    volume : int or float</span>
+<span class="sd">        The volume of the room in m³.</span>
+<span class="sd">    c : int or float</span>
+<span class="sd">        The speed of sound in air in m/s, calculated based on the room&#39;s temperature and pressure.</span>
+<span class="sd">    type : str</span>
+<span class="sd">        The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;).</span>
+<span class="sd">    T_soll : int or float</span>
+<span class="sd">        The target reverberation time in s according to DIN 18041, calculated based on the room type, volume and height.</span>
+<span class="sd">    T_upper_limit : np.array</span>
+<span class="sd">        The upper limit for reverberation time in s according to DIN 18041, calculated based on the target reverberation time.</span>
+<span class="sd">    T_lower_limit : np.array</span>
+<span class="sd">        The lower limit for reverberation time in s according to DIN 18041, calculated based on the target reverberation time.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc_room</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a DIN_18041_limits object with a specified room and room type.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        calc_room : room</span>
+<span class="sd">            The room for which the limits are calculated, which is an instance of the room class.</span>
+<span class="sd">        type : str</span>
+<span class="sd">            The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        -------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the room is not an instance of the room class or if the type is not a string.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the type is not a valid room type according to DIN 18041.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_room</span><span class="p">,</span> <span class="n">room</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Room must be an instance of the room class.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Type must be a string.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Type must be a valid room type according to DIN 18041 (e.g., &#39;A1&#39;, &#39;B2&#39;).&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span> <span class="o">=</span> <span class="n">calc_room</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_limits</span><span class="p">()</span>
+        
+
+<div class="viewcode-block" id="DIN_18041_limits.get_limits">
+<a class="viewcode-back" href="../api.html#reverberation_calc.DIN_18041_limits.get_limits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the limits for reverberation time ain s ccording to DIN 18041 based on room type, volume, and height.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of float</span>
+<span class="sd">            A list containing the upper and lower limits for reverberation time in s according to DIN 18041.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the limits Tsoll for reverberation time according to DIN 18041 based on room type, volume and height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">case</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+                <span class="n">T_upper_limit_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.7</span><span class="p">,</span><span class="mf">1.45</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">))</span>
+                <span class="n">T_lower_limit_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.65</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.65</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
+
+                <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">case</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be at least 30 m³ for type A1.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be smaller than 1000 m³ for type A1.&quot;</span><span class="p">)</span>
+                        
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mf">0.45</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.07</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be at least 50 m³ for type A2.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be smaller than 5000 m³ for type A2.&quot;</span><span class="p">)</span>
+                        
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mf">0.37</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.14</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be at least 30 m³ for type A3.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be smaller than 5000 m³ for type A3.&quot;</span><span class="p">)</span>
+                        
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mf">0.32</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.17</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be at least 30 m³ for type A4.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be smaller than 500 m³ for type A4.&quot;</span><span class="p">)</span>
+                        
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mf">0.26</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.14</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">:</span>
+                            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, the room volume should be at least 200 m³ for type A5.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">9999</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mi">2</span>
+                        
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mf">0.75</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_upper_limit</span> <span class="o">=</span> <span class="n">T_upper_limit_A</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_lower_limit</span> <span class="o">=</span> <span class="n">T_lower_limit_A</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span>
+
+            <span class="k">case</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+                <span class="n">T_upper_limit_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">T_lower_limit_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+                <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">case</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;According to DIN 18041, there are no requirements for type B1.&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">case</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;=</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mf">0.15</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">4.8</span> <span class="o">+</span> <span class="mf">4.69</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;=</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mf">0.20</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">3.13</span> <span class="o">+</span> <span class="mf">4.69</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;=</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mf">0.25</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.13</span> <span class="o">+</span> <span class="mf">4.69</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+
+                    <span class="k">case</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&lt;=</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mf">0.30</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="mf">2.5</span><span class="p">:</span>
+                            <span class="n">A_V</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">1.47</span> <span class="o">+</span> <span class="mf">4.69</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="p">(</span><span class="mf">55.3</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="p">(</span><span class="n">A_V</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_upper_limit</span> <span class="o">=</span> <span class="n">T_upper_limit_B</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_lower_limit</span> <span class="o">=</span> <span class="n">T_lower_limit_B</span>
+
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid room type specified.&quot;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_lower_limit</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Reverberation Optimizer</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Paula Klein, Deniz Sharideh, Linus Staubach.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

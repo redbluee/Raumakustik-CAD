@@ -1,7 +1,7 @@
-API Reference
+GUI Reference
 =============
 
-.. automodule:: reverberation_calc
+.. automodule:: pages.home
    :members:
    :undoc-members:
    :show-inheritance:

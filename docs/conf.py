@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../pages'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Reverberation Optimizer'
+project = 'RoomAcousticWizard'
 copyright = '2025, Paula Klein, Deniz Sharideh, Linus Staubach'
 author = 'Paula Klein, Deniz Sharideh, Linus Staubach'
 
@@ -24,12 +24,17 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx_autodoc_typehints',
     'myst_parser',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.todo',
     ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-
+mathjax_config = {
+    'TeX': {'equationNumbers': {'autoNumber': 'all'}}
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
