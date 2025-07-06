@@ -19,10 +19,10 @@ df_room_usage = pd.DataFrame(
 
 # Define table columns
 column_definitions = []
-column_definitions.append({"name": "Flächenbez.", "id": "col-1", "editable": True})
-column_definitions.append({"name": "Fläche [m²]", "id": "col-2", "editable": True})
+column_definitions.append({"name": "Surface Label", "id": "col-1", "editable": True})
+column_definitions.append({"name": "Area m²", "id": "col-2", "editable": True})
 column_definitions.append({"name": "DB", "id": "col-3", "editable": False})
-column_definitions.append({"name": "Materialbez.", "id": "col-4", "editable": True})
+column_definitions.append({"name": "Sound absorber", "id": "col-4", "editable": True})
 column_definitions.append({"name": "α₆₃", "id": "col-5", "editable": True})
 column_definitions.append({"name": "α₁₂₅", "id": "col-6", "editable": True})
 column_definitions.append({"name": "α₂₅₀", "id": "col-7", "editable": True})
@@ -54,8 +54,8 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.H5(children="Raumcharakteristiken"),
-                        html.Label(["Raumvolumen [m", html.Sup(3), "]"]),
+                        html.H5(children="Room parameters"),
+                        html.Label(["Room Volume", "\u00A0", "m", html.Sup("3")]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -65,7 +65,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Raumhöhe [m]"),
+                        html.Label(["Room Height", "\u00A0", "m"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -75,7 +75,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Temperatur [°C]"),
+                        html.Label(["Temperature", "\u00A0", "°C"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -85,7 +85,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Luftfeuchte [ %]"),
+                        html.Label("Relative Humidity\u00A0%"),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -95,7 +95,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Umgebungsdruck [hPa]"),
+                        html.Label("Air Pressure\u00A0hPa"),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -105,7 +105,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Raumnutzungsart"),
+                        html.Label("Room Usage Type"),
                         html.Br(),
                         dcc.Dropdown(
                             options=[
@@ -146,9 +146,9 @@ layout = dbc.Container(
                 ),
                 dbc.Col(
                     [
-                        html.H5(children="Berichtgenerierung"),
+                        html.H5(children="Report Generation"),
                         html.Button(
-                            "Export pdf",
+                            "Export PDF",
                             id="export",
                             n_clicks=0,
                             title="The grid search may take several minutes",
@@ -164,7 +164,7 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.H5(children="Raumbeschreibende Flächenzuweisung"),
+                        html.H5(children="Definition of Room Surfaces"),
                         dash_table.DataTable(
                             id="flächen-tabelle",
                             columns=table_columns,
@@ -209,7 +209,7 @@ layout = dbc.Container(
                             ],
                         ),
                         html.Button(
-                            "Zeile hinzufügen",
+                            "Add Row",
                             id="add-fläche-row-button",
                             n_clicks=0,
                             className="my-button",
@@ -221,11 +221,11 @@ layout = dbc.Container(
         ),
         dbc.Modal(
             [
-                dbc.ModalHeader(dbc.ModalTitle("Materialauswahl"), close_button=True),
+                dbc.ModalHeader(dbc.ModalTitle("Material selection"), close_button=True),
                 dbc.ModalBody(id="details-modal-body-content"),
                 dbc.ModalFooter(
                     dbc.Button(
-                        "Schließen",
+                        "Close",
                         id="close-details-modal-button",
                         className="ml-auto my-button",
                         n_clicks=0,
@@ -387,8 +387,8 @@ def update_graph(room_usage, switch_value, volume, temp, height):
     """
     
     title = (
-        f"Nutzung: {room_usage}, Switch: {switch_value}, "
-        f"Vol: {volume}, Temp: {temp}, Höhe: {height}"
+        f"Usage Type: {room_usage}, Switch: {switch_value}, "
+        f"Vol: {volume}, Temp: {temp}, Height: {height}"
     )
     y_values = [
         float(volume) if volume not in [None, ""] else 0,
