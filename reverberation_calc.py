@@ -979,7 +979,7 @@ class DIN_18041_limits:
     c : int or float
         The speed of sound in air in m/s, calculated based on the room's temperature and pressure.
     type : str
-        The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2").
+        The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", "no requirements").
     T_soll : int or float
         The target reverberation time in s according to DIN 18041, calculated based on the room type, volume and height.
     T_upper_limit : np.array
@@ -998,7 +998,7 @@ class DIN_18041_limits:
         calc_room : room
             The room for which the limits are calculated, which is an instance of the room class.
         type : str
-            The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2").
+            The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", "no requirements"). 
 
         Raises
         -------
@@ -1012,7 +1012,7 @@ class DIN_18041_limits:
         if not isinstance(type, str):
             raise TypeError("Type must be a string.")
         if len(type) != 2 or type[0] not in ["A", "B"] or type[1] not in ["1", "2", "3", "4", "5"]:
-            raise ValueError("Type must be a valid room type according to DIN 18041 (e.g., 'A1', 'B2').")
+            raise ValueError("Type must be a valid room type according to DIN 18041 (e.g., 'A1', 'B2') or , 'no requirements'.")
         self.calc_room = calc_room
         self.volume = self.calc_room.volume
         self.c = self.calc_room.c
@@ -1123,5 +1123,12 @@ class DIN_18041_limits:
 
             case _:
                 raise ValueError("Invalid room type specified.")
+            
+                        
+        match self.type:
+            case "no requirements":
+                self.T_soll = np.nan
+                self.T_upper_limit = np.array([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
+                self.T_lower_limit = np.array([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
             
         return (self.T_upper_limit, self.T_lower_limit)
