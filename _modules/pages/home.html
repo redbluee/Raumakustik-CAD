@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pages.home &#8212; RoomAcousticWizard  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pages.home</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">dash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dash</span><span class="w"> </span><span class="kn">import</span> <span class="n">html</span><span class="p">,</span> <span class="n">dcc</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">dash_table</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dash_daq</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">daq</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dash_bootstrap_components</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dbc</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SPHINX_BUILD&quot;</span><span class="p">):</span>
+    <span class="n">dash</span><span class="o">.</span><span class="n">register_page</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Reverbation | Home&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Define Dropdown Data</span>
+<span class="n">df_room_usage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;A2&quot;</span><span class="p">,</span> <span class="s2">&quot;A3&quot;</span><span class="p">,</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="s2">&quot;A5&quot;</span><span class="p">,</span> <span class="s2">&quot;B1&quot;</span><span class="p">,</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span> <span class="s2">&quot;B5&quot;</span><span class="p">]}</span>
+<span class="p">)</span>
+
+<span class="c1"># Define table columns</span>
+<span class="n">column_definitions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Flächenbez.&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-1&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Fläche [m²]&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-2&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DB&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-3&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Materialbez.&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-4&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₆₃&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-5&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₁₂₅&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-6&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₂₅₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-7&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₅₀₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-8&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₁₀₀₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-9&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₂₀₀₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-10&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₄₀₀₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-11&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;α₈₀₀₀&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-12&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span> 
+
+<span class="c1"># Add the delete column as the last one</span>
+<span class="n">column_definitions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-delete&quot;</span><span class="p">,</span> <span class="s2">&quot;editable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="n">table_columns</span> <span class="o">=</span> <span class="n">column_definitions</span>
+
+<span class="c1"># Define the initial empty row with icons</span>
+<span class="n">initial_empty_row</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)}</span>
+<span class="n">initial_empty_row</span><span class="p">[</span><span class="s2">&quot;col-3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;💾&quot;</span> 
+<span class="n">initial_empty_row</span><span class="p">[</span><span class="s2">&quot;col-delete&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;🗑️&quot;</span>
+
+
+<span class="c1"># Page Layout</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">dbc</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">([</span><span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span><span class="s2">&quot;Reverberation Optimization&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;app-brand&quot;</span><span class="p">)]),</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Raumcharakteristiken&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Raumvolumen [m&quot;</span><span class="p">,</span> <span class="n">html</span><span class="o">.</span><span class="n">Sup</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;]&quot;</span><span class="p">]),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;30&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_volume&quot;</span><span class="p">,</span>
+                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Raumhöhe [m]&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span>
+                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Temperatur [°C]&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_temperature&quot;</span><span class="p">,</span>
+                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Luftfeuchte [ %]&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;50&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_humidity&quot;</span><span class="p">,</span>
+                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Umgebungsdruck [hPa]&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;101.35&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_pressure&quot;</span><span class="p">,</span>
+                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Raumnutzungsart&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
+                            <span class="n">options</span><span class="o">=</span><span class="p">[</span>
+                                <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span>
+                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df_room_usage</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span>
+                            <span class="p">],</span>
+                            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;dropdown_room_usage&quot;</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-dropdown&quot;</span><span class="p">,</span> <span class="c1"># Use custom style class</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
+                            <span class="p">[</span>
+                                <span class="n">daq</span><span class="o">.</span><span class="n">ToggleSwitch</span><span class="p">(</span>
+                                    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#3DED97&quot;</span><span class="p">,</span>
+                                    <span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+                                    <span class="n">theme</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dark&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                                <span class="p">)</span>
+                            <span class="p">],</span>
+                            <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;textAlign&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">},</span>
+                        <span class="p">),</span>
+                    <span class="p">],</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">dcc</span><span class="o">.</span><span class="n">Loading</span><span class="p">(</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;nachhallzeit-graph&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+                            <span class="n">children</span><span class="o">=</span><span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span>
+                                <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fig-transformed&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-graph&quot;</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                    <span class="n">className</span><span class="o">=</span><span class="s2">&quot;multi-graph&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Berichtgenerierung&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+                            <span class="s2">&quot;Export pdf&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;export&quot;</span><span class="p">,</span>
+                            <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The grid search may take several minutes&quot;</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">],</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5px 1px 1px 1px&quot;</span><span class="p">},</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Raumbeschreibende Flächenzuweisung&quot;</span><span class="p">),</span>
+                        <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span>
+                            <span class="n">columns</span><span class="o">=</span><span class="n">table_columns</span><span class="p">,</span>
+                            <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">initial_empty_row</span><span class="p">],</span>
+                            <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">row_deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># MODIFIED: Disable default delete</span>
+                            <span class="n">style_table</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;overflowX&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;minWidth&quot;</span><span class="p">:</span> <span class="s2">&quot;100%&quot;</span><span class="p">},</span>
+                            <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span>
+                                <span class="s2">&quot;textAlign&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="s2">&quot;5px&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#0e2a2e&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#f6f6f6&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid #042f33&quot;</span><span class="p">,</span>
+                            <span class="p">},</span>
+                            <span class="n">style_header</span><span class="o">=</span><span class="p">{</span>
+                                <span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#042f33&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;fontWeight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#f6f6f6&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid #3DED97&quot;</span><span class="p">,</span>
+                            <span class="p">},</span>
+                            <span class="n">style_data_conditional</span><span class="o">=</span><span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;row_index&quot;</span><span class="p">:</span> <span class="s2">&quot;odd&quot;</span><span class="p">},</span>
+                                    <span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#0c262a&quot;</span><span class="p">,</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="c1"># DB Icon</span>
+                                    <span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;column_id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-3&quot;</span><span class="p">},</span>
+                                    <span class="s2">&quot;textAlign&quot;</span><span class="p">:</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;pointer&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;fontWeight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+                                    <span class="c1"># &quot;color&quot;: &quot;#3DED97&quot;,</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="c1"># Delete Icon</span>
+                                    <span class="s2">&quot;if&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;column_id&quot;</span><span class="p">:</span> <span class="s2">&quot;col-delete&quot;</span><span class="p">},</span>
+                                    <span class="s2">&quot;textAlign&quot;</span><span class="p">:</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;pointer&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;fontWeight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+                                    <span class="c1"># &quot;color&quot;: &quot;#FF6B6B&quot;,</span>
+                                <span class="p">},</span>
+                            <span class="p">],</span>
+                        <span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+                            <span class="s2">&quot;Zeile hinzufügen&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;add-fläche-row-button&quot;</span><span class="p">,</span>
+                            <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
+                            <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;marginTop&quot;</span><span class="p">:</span> <span class="s2">&quot;10px&quot;</span><span class="p">},</span>
+                        <span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">dbc</span><span class="o">.</span><span class="n">Modal</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">ModalHeader</span><span class="p">(</span><span class="n">dbc</span><span class="o">.</span><span class="n">ModalTitle</span><span class="p">(</span><span class="s2">&quot;Materialauswahl&quot;</span><span class="p">),</span> <span class="n">close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">ModalBody</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;details-modal-body-content&quot;</span><span class="p">),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">ModalFooter</span><span class="p">(</span>
+                    <span class="n">dbc</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+                        <span class="s2">&quot;Schließen&quot;</span><span class="p">,</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">,</span>
+                        <span class="n">className</span><span class="o">=</span><span class="s2">&quot;ml-auto my-button&quot;</span><span class="p">,</span>
+                        <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">],</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span>
+            <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">is_open</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Page Callbacks</span>
+
+<span class="c1"># Callback for adding a row</span>
+<div class="viewcode-block" id="add_row_to_flächen_tabelle">
+<a class="viewcode-back" href="../../gui.html#pages.home.add_row_to_flächen_tabelle">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># allow_duplicate needed if another callback modifies data</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;add-fläche-row-button&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_flächen_tabelle</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_row_data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)}</span>
+    <span class="n">new_row_data</span><span class="p">[</span><span class="s2">&quot;col-delete&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;🗑️&quot;</span> <span class="c1"># Add delete icon to new rows</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_row_data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+
+<span class="c1"># Callback to open/close modal AND handle custom row deletion</span>
+<div class="viewcode-block" id="handle_table_interactions">
+<a class="viewcode-back" href="../../gui.html#pages.home.handle_table_interactions">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal-body-content&quot;</span><span class="p">,</span> <span class="s2">&quot;children&quot;</span><span class="p">),</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Keep allow_duplicate if other callbacks modify data</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span> <span class="s2">&quot;active_cell&quot;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">,</span> <span class="s2">&quot;n_clicks&quot;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span> 
+    <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">handle_table_interactions</span><span class="p">(</span><span class="n">active_cell</span><span class="p">,</span> <span class="n">close_clicks</span><span class="p">,</span> <span class="n">modal_is_open</span><span class="p">,</span> <span class="n">table_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handle interactions with the main table, including opening the modal and deleting rows.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    active_cell : dict</span>
+<span class="sd">        The currently active cell in the table.</span>
+<span class="sd">    close_clicks : int</span>
+<span class="sd">        Number of clicks on the close button.</span>
+<span class="sd">    modal_is_open : bool</span>
+<span class="sd">        Current state of the modal.</span>
+<span class="sd">    table_data : list</span>
+<span class="sd">        Current data in the table.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    new_modal_state : bool</span>
+<span class="sd">        Updated state of the modal.</span>
+<span class="sd">    new_modal_content : dash_html_components.Component</span>
+<span class="sd">        Content to display in the modal.</span>
+<span class="sd">    new_table_data : list</span>
+<span class="sd">        Updated data for the table after deletion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
+    <span class="n">ctx</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">callback_context</span>
+    <span class="n">triggered_id</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">triggered</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;prop_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">new_modal_state</span> <span class="o">=</span> <span class="n">modal_is_open</span>
+    <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span>
+    <span class="n">new_table_data</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span> 
+
+    <span class="k">if</span> <span class="n">triggered_id</span> <span class="o">==</span> <span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">:</span>
+        <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span>
+
+    <span class="k">if</span> <span class="n">active_cell</span> <span class="ow">and</span> <span class="n">table_data</span><span class="p">:</span>
+        <span class="n">row_index</span> <span class="o">=</span> <span class="n">active_cell</span><span class="p">[</span><span class="s2">&quot;row&quot;</span><span class="p">]</span>
+        <span class="n">col_id</span> <span class="o">=</span> <span class="n">active_cell</span><span class="p">[</span><span class="s2">&quot;column_id&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">row_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">table_data</span><span class="p">):</span>
+            <span class="c1"># Click action on DB icon in the main table</span>
+            <span class="k">if</span> <span class="n">col_id</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span><span class="p">:</span>
+                <span class="n">selected_row_data</span> <span class="o">=</span> <span class="n">table_data</span><span class="p">[</span><span class="n">row_index</span><span class="p">]</span>
+
+                <span class="c1"># Prepare columns for the modal table:</span>
+                <span class="c1"># table_columns is defined globally</span>
+                <span class="n">modal_table_display_columns</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">col_def</span> <span class="ow">in</span> <span class="n">table_columns</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">col_def</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;col-3&#39;</span><span class="p">,</span> <span class="s1">&#39;col-delete&#39;</span><span class="p">]:</span> <span class="c1"># Exclude DB and Delete columns</span>
+                        <span class="n">modal_col</span> <span class="o">=</span> <span class="n">col_def</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">modal_col</span><span class="p">[</span><span class="s1">&#39;editable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Make all columns non-editable in the modal</span>
+                        <span class="n">modal_table_display_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modal_col</span><span class="p">)</span>
+                
+                <span class="c1"># The data for the modal table is the single selected row, wrapped in a list</span>
+                <span class="n">modal_table_display_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">selected_row_data</span><span class="p">]</span>
+                
+                <span class="c1"># Modal style_data_conditional</span>
+                <span class="n">modal_s_d_c</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="n">modal_table_component</span> <span class="o">=</span> <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;modal-detail-display-table&#39;</span><span class="p">,</span> 
+                    <span class="n">columns</span><span class="o">=</span><span class="n">modal_table_display_columns</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">modal_table_display_data</span><span class="p">,</span>
+                    <span class="n">style_table</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;overflowX&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;minWidth&#39;</span><span class="p">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">},</span>
+                    <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span> 
+                        <span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;5px&#39;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="n">style_header</span><span class="o">=</span><span class="p">{},</span>
+                    <span class="n">style_data_conditional</span><span class="o">=</span><span class="n">modal_s_d_c</span><span class="p">,</span>
+                <span class="p">)</span>
+                
+                <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">modal_table_component</span>
+                <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">True</span>
+            
+            <span class="k">elif</span> <span class="n">col_id</span> <span class="o">==</span> <span class="s2">&quot;col-delete&quot;</span><span class="p">:</span> <span class="c1"># Click on Delete icon in the main table</span>
+                <span class="n">updated_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table_data</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">row_index</span><span class="p">]</span>
+                <span class="n">new_table_data</span> <span class="o">=</span> <span class="n">updated_rows</span>
+                <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">False</span> 
+                <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span>
+        
+    <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span></div>
+
+
+
+<span class="c1"># Existing Callbacks</span>
+<div class="viewcode-block" id="update_graph">
+<a class="viewcode-back" href="../../gui.html#pages.home.update_graph">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fig-transformed&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;dropdown_room_usage&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_graph</span><span class="p">(</span><span class="n">room_usage</span><span class="p">,</span> <span class="n">switch_value</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update the graph based on user inputs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    room_usage : str</span>
+<span class="sd">        Selected room usage type.</span>
+<span class="sd">    switch_value : bool</span>
+<span class="sd">        State of the toggle switch.</span>
+<span class="sd">    volume : float</span>
+<span class="sd">        Room volume in cubic meters.</span>
+<span class="sd">    temp : float</span>
+<span class="sd">        Room temperature in degrees Celsius.</span>
+<span class="sd">    height : float</span>
+<span class="sd">        Room height in meters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fig : plotly.graph_objects.Figure</span>
+<span class="sd">        Updated figure with new data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Nutzung: </span><span class="si">{</span><span class="n">room_usage</span><span class="si">}</span><span class="s2">, Switch: </span><span class="si">{</span><span class="n">switch_value</span><span class="si">}</span><span class="s2">, &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Vol: </span><span class="si">{</span><span class="n">volume</span><span class="si">}</span><span class="s2">, Temp: </span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2">, Höhe: </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">y_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="k">if</span> <span class="n">volume</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="k">if</span> <span class="n">height</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">]</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y_values</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">RoomAcousticWizard</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gui.html">graphical user interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">calculation backend</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Paula Klein, Deniz Sharideh, Linus Staubach.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
