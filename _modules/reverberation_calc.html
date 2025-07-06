@@ -1128,7 +1128,7 @@
 <span class="sd">    c : int or float</span>
 <span class="sd">        The speed of sound in air in m/s, calculated based on the room&#39;s temperature and pressure.</span>
 <span class="sd">    type : str</span>
-<span class="sd">        The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;).</span>
+<span class="sd">        The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;, &quot;no requirements&quot;).</span>
 <span class="sd">    T_soll : int or float</span>
 <span class="sd">        The target reverberation time in s according to DIN 18041, calculated based on the room type, volume and height.</span>
 <span class="sd">    T_upper_limit : np.array</span>
@@ -1147,7 +1147,7 @@
 <span class="sd">        calc_room : room</span>
 <span class="sd">            The room for which the limits are calculated, which is an instance of the room class.</span>
 <span class="sd">        type : str</span>
-<span class="sd">            The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;).</span>
+<span class="sd">            The type of room according to DIN 18041, specified as a string (e.g., &quot;A1&quot;, &quot;B2&quot;, &quot;no requirements&quot;). </span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        -------</span>
@@ -1161,7 +1161,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Type must be a string.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Type must be a valid room type according to DIN 18041 (e.g., &#39;A1&#39;, &#39;B2&#39;).&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Type must be a valid room type according to DIN 18041 (e.g., &#39;A1&#39;, &#39;B2&#39;) or , &#39;no requirements&#39;.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span> <span class="o">=</span> <span class="n">calc_room</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">volume</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_room</span><span class="o">.</span><span class="n">c</span>
@@ -1274,6 +1274,13 @@
 
             <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid room type specified.&quot;</span><span class="p">)</span>
+            
+                        
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s2">&quot;no requirements&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_soll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_upper_limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">T_lower_limit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
             
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_lower_limit</span><span class="p">)</span></div>
 </div>
