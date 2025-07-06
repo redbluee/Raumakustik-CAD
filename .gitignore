@@ -1,4 +1,6 @@
 
 pages/__pycache__/
-
 assets/__pycache__/
+__pycache__/
+docs/_build/
+

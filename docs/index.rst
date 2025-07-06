@@ -3,16 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Reverberation Optimizer documentation
+RoomAcousticWizard documentation
 =====================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+
+This documentation provides an overview of the internal code from RoomAcousticWizard, a tool designed to calculate and optimize reverberation times in rooms according to the DIN 18041. It includes both an API for programmatic access and a graphical user interface (GUI) for interactive use.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
+   gui
    api
