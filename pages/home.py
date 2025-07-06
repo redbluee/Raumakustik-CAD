@@ -20,7 +20,7 @@ df_room_usage = pd.DataFrame(
 # Define table columns
 column_definitions = []
 column_definitions.append({"name": "Surface Label", "id": "col-1", "editable": True})
-column_definitions.append({"name": "Area\u00A0m²", "id": "col-2", "editable": True})
+column_definitions.append({"name": "Area m²", "id": "col-2", "editable": True})
 column_definitions.append({"name": "DB", "id": "col-3", "editable": False})
 column_definitions.append({"name": "Sound absorber", "id": "col-4", "editable": True})
 column_definitions.append({"name": "α₆₃", "id": "col-5", "editable": True})
@@ -65,7 +65,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Room Height", "\u00A0", "m"),
+                        html.Label(["Room Height", "\u00A0", "m"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -75,7 +75,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Temperature", "\u00A0", "°C"),
+                        html.Label(["Temperature", "\u00A0", "°C"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -85,7 +85,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Relative Humidity\u00A0%]"),
+                        html.Label("Relative Humidity\u00A0%"),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -95,7 +95,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Air Pressure\u00A0hPa]"),
+                        html.Label("Air Pressure\u00A0hPa"),
                         html.Br(),
                         dcc.Input(
                             type="number",
