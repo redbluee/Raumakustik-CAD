@@ -51,3 +51,19 @@ Perforated bricks (cautious assumption),nan,0.1,0.2,0.44,0.55,0.44,0.22,nan
 "Plasterboard 9.5 mm, 8/18 round holes, 15% perforated area component, lined on the back with fleece fabric, spacing 100 mm",nan,0.12,0.28,0.75,0.5,0.38,0.3,nan
 "Plasterboard, slotted, 8.8 % open area, lined on the back with fleece fabric, spacing 100 mm",nan,0.11,0.28,0.66,0.38,0.28,0.3,nan
 "Perforated extra-long metal cassette panel, 20% perforated area component, 3 mm hole diameter, acoustic felt, 300 mm spacing",nan,0.38,0.65,0.59,0.75,0.77,0.61,nan
+"Male in suit, seated",nan,0.15,0.25,0.55,0.8,0.9,0.9,nan
+"Female in summer dress, seated",nan,0.05,0.1,0.15,0.35,0.45,0.6,nan
+Single upholstered chair with artificial leather covering,nan,0.05,0.15,0.2,0.1,0.03,0.03,nan
+Single upholstered chair with textile covering,nan,0.15,0.25,0.3,0.35,0.4,0.4,nan
+"Individual person in a group, standing or seated, 1 person per 6 m² of area; typical minimum value",nan,0.05,0.1,0.2,0.35,0.5,0.65,nan
+"Cabinet with sound-absorptive shutter, without rear panel, 1200 mm, 5 box file levels (1.75 m) high, free-standing in the room",nan,1.63,1.84,1.31,1.63,1.54,1.56,nan
+"Cabinet with smooth shutter, without rear panel, 1200 mm wide, 5 box file levels (1.75 m) high, free-standing in the room",nan,0.83,0.76,0.52,0.48,0.41,0.45,nan
+"Cabinet 5 box file levels (1.75 m) high, perforated door and absorptive rear panel, 1200 mm wide, 435 mm deep, free-standing in the room",nan,1.95,2.0,2.44,2.85,2.84,2.43,nan
+"Wall panel, slightly absorptive, 1024 mm × 1590 mm × 63 mm, free-standing in the room",nan,0.51,0.78,1.22,1.72,2.43,2.83,nan
+"Wall panel, highly absorptive, 1024 mm × 1590 mm × 63 mm, free-standing in the room",nan,0.43,1.13,1.99,2.96,2.73,2.56,nan
+"Cabinet 4 box file levels (1.4 m) high, 1400 mm wide, 435 mm deep, acoustically active sliding door, acoustically active rear panel, free-standing in the room",nan,1.93,2.1,1.6,1.59,1.32,1.31,nan
+"Cabinet 4 box file levels (1.4 m) high, 1400 mm wide, 435 mm deep, acoustically active sliding door, acoustically active rear panel, standing directly in front of wall",nan,1.55,1.19,0.82,0.91,0.76,0.74,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel and front swing doors non-perforated, free-standing in the room",nan,1.35,0.61,0.52,0.26,0.14,0.1,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel and front swing doors perforated (non-woven insert), free-standing in the room",nan,2.5,2.22,2.6,2.6,2.45,2.62,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel perforated (non-woven insert), front swing doors, free-standing in the room",nan,2.5,2.4,1.8,1.73,1.59,1.58,nan
+"Floating ceiling panel made from recycled glass wool with micro-porous paint coating, 2400 mm × 1200 mm, 40 mm thick, suspended 200 mm from bare ceiling",nan,0.9,2.4,3.4,4.0,4.1,3.8,nan
