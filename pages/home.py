@@ -5,7 +5,9 @@ import dash_bootstrap_components as dbc
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import os
+import reverberation_calc
 
 
 if not os.environ.get("SPHINX_BUILD"):
@@ -168,7 +170,7 @@ layout = dbc.Container(
                     [
                         html.H5(children="Definition of Room Surfaces"),
                         dash_table.DataTable(
-                            id="flächen-tabelle",
+                            id="area-table",
                             columns=table_columns,
                             data=[initial_empty_row],
                             editable=True,
@@ -212,7 +214,7 @@ layout = dbc.Container(
                         ),
                         html.Button(
                             "Add Row",
-                            id="add-fläche-row-button",
+                            id="add-area-row-button",
                             n_clicks=0,
                             className="my-button",
                             style={"marginTop": "10px"},
@@ -250,12 +252,12 @@ layout = dbc.Container(
 
 # Callback for adding a row
 @callback(
-    Output('flächen-tabelle', 'data', allow_duplicate=True), # allow_duplicate needed if another callback modifies data
-    Input('add-fläche-row-button', 'n_clicks'),
-    State('flächen-tabelle', 'data'),
+    Output('area-table', 'data', allow_duplicate=True), # allow_duplicate needed if another callback modifies data
+    Input('add-area-row-button', 'n_clicks'),
+    State('area-table', 'data'),
     prevent_initial_call=True
 )
-def add_row_to_flächen_tabelle(n_clicks, rows):
+def add_row_to_area_table(n_clicks, rows):
     if rows is None:
         rows = []
     new_row_data = {f"col-{i+1}": "💾" if f"col-{i+1}" == "col-3" else "" for i in range(12)}
@@ -267,11 +269,11 @@ def add_row_to_flächen_tabelle(n_clicks, rows):
 @callback(
     Output("details-modal", "is_open"),
     Output("details-modal-body-content", "children"),
-    Output('flächen-tabelle', 'data', allow_duplicate=True), # Keep allow_duplicate if other callbacks modify data
-    Input("flächen-tabelle", "active_cell"),
+    Output('area-table', 'data', allow_duplicate=True), # Keep allow_duplicate if other callbacks modify data
+    Input("area-table", "active_cell"),
     Input("close-details-modal-button", "n_clicks"),
     State("details-modal", "is_open"),
-    State("flächen-tabelle", "data"), 
+    State("area-table", "data"), 
     prevent_initial_call=True
 )
 def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_data):
@@ -367,46 +369,134 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
     return new_modal_state, new_modal_content, new_table_data
 
 
-# Existing Callbacks
+# Connect all inputs to the calculation module and update the graph
 @callback(
     Output('fig-transformed', 'figure'),
-    Input("dropdown_room_usage", "value"),
-    Input("my-toggle-switch", "value"),
-    Input("input_room_volume", "value"),
-    Input("input_room_temperature", "value"),
-    Input("input_room_height", "value"),
+    [
+        Input('area-table', 'data'),
+        Input("input_room_volume", "value"),
+        Input("input_room_temperature", "value"),
+        Input("input_room_humidity", "value"),
+        Input("input_room_pressure", "value"),
+        Input("dropdown_room_usage", "value"),
+    ]
 )
-def update_graph(room_usage, switch_value, volume, temp, height):
+def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, room_usage):
     """
-    Update the graph based on user inputs.
+    Update the graph based on all user inputs by calling the calculation module.
 
     Parameters
     ----------
-    room_usage : str
-        Selected room usage type.
-    switch_value : bool
-        State of the toggle switch.
+    table_data : list of dicts
+        Data from the surface definition table.
     volume : float
         Room volume in cubic meters.
     temp : float
         Room temperature in degrees Celsius.
-    height : float
-        Room height in meters.
+    humidity : float
+        Relative humidity in percent.
+    pressure : float
+        Air pressure in hPa.
+    room_usage : str
+        Selected room usage type.
 
     Returns
     -------
     fig : plotly.graph_objects.Figure
-        Updated figure with new data.
+        Updated figure with calculated reverberation time.
     """
-    
-    title = (
-        f"Usage Type: {room_usage}, Switch: {switch_value}, "
-        f"Vol: {volume}, Temp: {temp}, Height: {height}"
+    # Default values for numeric inputs
+    volume = float(volume) if volume else 0
+    temp = float(temp) if temp else 20
+    humidity = float(humidity) if humidity else 50
+    pressure = float(pressure) if pressure else 1013.25
+
+    # Create a default empty figure
+    fig = go.Figure()
+    fig.update_layout(
+        title_text="Please provide room volume and surface data for calculation",
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font_color="#f6f6f6"
     )
-    y_values = [
-        float(volume) if volume not in [None, ""] else 0,
-        float(temp) if temp not in [None, ""] else 0,
-        float(height) if height not in [None, ""] else 0
-    ]
-    fig = px.line(x=[0, 1, 2], y=y_values, title=title)
+
+    if not volume or not table_data:
+        return fig
+
+    try:
+        # Convert table data to DataFrame
+        df_area = pd.DataFrame(table_data)
+        
+        # Define new column names for clarity
+        column_mapping = {
+            'col-2': 'Area',
+            'col-5': '63', 'col-6': '125', 'col-7': '250', 'col-8': '500',
+            'col-9': '1000', 'col-10': '2000', 'col-11': '4000', 'col-12': '8000'
+        }
+        df_area = df_area.rename(columns=column_mapping)
+
+        # Select and convert only the necessary numeric columns
+        numeric_cols = list(column_mapping.values())
+        for col in numeric_cols:
+            df_area[col] = pd.to_numeric(df_area[col], errors='coerce')
+        
+        # Drop rows where essential data (Area or any alpha) is missing
+        df_area.dropna(subset=numeric_cols, inplace=True)
+
+        if df_area.empty:
+            fig.update_layout(title_text="Valid surface data is required for calculation.")
+            return fig
+
+        # Calculate reverberation time
+        df_reverb = reverberation_calc.calculate_reverberation_time(
+            volume=volume,
+            area=df_area,
+            temperature=temp,
+            humidity=humidity,
+            pressure=pressure
+        )
+
+        # Get target reverberation time range
+        df_target = reverberation_calc.get_target_reverb_time(
+            nutzung=room_usage,
+            volumen=volume
+        )
+
+        # Plotting
+        fig.add_trace(go.Scatter(
+            x=df_reverb['Frequency'], 
+            y=df_reverb['Reverberation Time'],
+            mode='lines+markers',
+            name='Reverberation Time (T)',
+            line=dict(color='#3DED97', width=3)
+        ))
+        fig.add_trace(go.Scatter(
+            x=df_target['Frequency'],
+            y=df_target['T_max'],
+            fill=None,
+            mode='lines',
+            line_color='rgba(255,107,107,0.5)',
+            name='Target Range (Upper)'
+        ))
+        fig.add_trace(go.Scatter(
+            x=df_target['Frequency'],
+            y=df_target['T_min'],
+            fill='tonexty', # fill area between trace0 and trace1
+            mode='lines',
+            line_color='rgba(255,107,107,0.5)',
+            name='Target Range (Lower)'
+        ))
+
+        fig.update_layout(
+            title_text="Reverberation Time Calculation",
+            xaxis_title="Frequency (Hz)",
+            yaxis_title="Reverberation Time (s)",
+            xaxis_type='log',
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+
+    except Exception as e:
+        fig.update_layout(title_text=f"An error occurred: {e}")
+
     return fig
