@@ -14,7 +14,7 @@ if not os.environ.get("SPHINX_BUILD"):
 
 # Define Dropdown Data
 df_room_usage = pd.DataFrame(
-    {"options": ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"]}
+    {"options": ["no requirements", "A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"]}
 )
 
 # Define table columns
@@ -112,8 +112,9 @@ layout = dbc.Container(
                                 {"label": i, "value": i}
                                 for i in df_room_usage["options"]
                             ],
-                            value="A1",
+                            value="no requirements",
                             id="dropdown_room_usage",
+                            clearable=False,
                             className="custom-dropdown", # Use custom style class
                         ),
                         html.Div(
