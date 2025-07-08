@@ -223,7 +223,11 @@ layout = dbc.Container(
         ),
         dbc.Modal(
             [
-                dbc.ModalHeader(dbc.ModalTitle("Material selection"), close_button=True),
+                dbc.ModalHeader(
+                    dbc.ModalTitle("Material selection"), 
+                    close_button=True, 
+                    style={"backgroundColor": "white", "color": "black"}
+                ),
                 dbc.ModalBody(id="details-modal-body-content"),
                 dbc.ModalFooter(
                     dbc.Button(
@@ -339,8 +343,15 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
                     style_cell={ 
                         'textAlign': 'left',
                         'padding': '5px',
+                        'color': 'black',
+                        'border': '1px solid black'
                     },
-                    style_header={},
+                    style_header={
+                        'backgroundColor': 'rgb(230, 230, 230)',
+                        'color': 'black',
+                        'fontWeight': 'bold',
+                        'border': '1px solid black'
+                    },
                     style_data_conditional=modal_s_d_c,
                 )
                 
