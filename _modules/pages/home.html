@@ -47,7 +47,7 @@
 
 <span class="c1"># Define Dropdown Data</span>
 <span class="n">df_room_usage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;A2&quot;</span><span class="p">,</span> <span class="s2">&quot;A3&quot;</span><span class="p">,</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="s2">&quot;A5&quot;</span><span class="p">,</span> <span class="s2">&quot;B1&quot;</span><span class="p">,</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span> <span class="s2">&quot;B5&quot;</span><span class="p">]}</span>
+    <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;no requirements&quot;</span><span class="p">,</span> <span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;A2&quot;</span><span class="p">,</span> <span class="s2">&quot;A3&quot;</span><span class="p">,</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="s2">&quot;A5&quot;</span><span class="p">,</span> <span class="s2">&quot;B1&quot;</span><span class="p">,</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span> <span class="s2">&quot;B5&quot;</span><span class="p">]}</span>
 <span class="p">)</span>
 
 <span class="c1"># Define table columns</span>
@@ -145,8 +145,10 @@
                                 <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span>
                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df_room_usage</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span>
                             <span class="p">],</span>
-                            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span>
+                            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;no requirements&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;dropdown_room_usage&quot;</span><span class="p">,</span>
+                            <span class="n">clearable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">searchable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-dropdown&quot;</span><span class="p">,</span> <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
