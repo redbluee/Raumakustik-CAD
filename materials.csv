@@ -1,0 +1,69 @@
+name,63,125,250,500,1000,2000,4000,8000
+"Brick wall, unplastered, joints pointed",nan,0.03,0.03,0.03,0.04,0.05,0.06,nan
+"Masonry comprising perforated bricks, holes visible, 60 mm in front of solid wall",nan,0.11,0.22,0.34,0.35,0.51,0.43,nan
+Smooth plaster,nan,0.02,0.02,0.03,0.03,0.04,0.06,nan
+Cement lime mortar,nan,0.03,0.03,0.02,0.04,0.05,0.05,nan
+Wallpaper on cement lime mortar,nan,0.02,0.03,0.04,0.05,0.07,0.08,nan
+"Mirror, in front of wall",nan,0.12,0.1,0.05,0.04,0.02,0.02,nan
+"Door, timber, lacquered",nan,0.1,0.08,0.06,0.05,0.05,0.05,nan
+"Stucco, unplastered concrete",nan,0.02,0.02,0.03,0.04,0.05,0.05,nan
+"Marble, tiles, clinker",nan,0.01,0.01,0.02,0.02,0.03,0.03,nan
+Window (insulated glazing),nan,0.28,0.2,0.11,0.06,0.03,0.02,nan
+"Parquet floor, adhesive-bonded",nan,0.04,0.04,0.05,0.06,0.06,0.06,nan
+"Parquet floor, on subfloor",nan,0.2,0.15,0.1,0.09,0.06,0.1,nan
+"Parquet floor, on cavity base",nan,0.15,0.08,0.07,0.06,0.06,0.06,nan
+"Carpeted floor, up to 6 mm pile height, on solid subfloor",nan,0.02,0.04,0.07,0.19,0.29,0.35,nan
+"Carpeted floor 7 mm to 10 mm pile height, on solid subfloor",nan,0.04,0.07,0.14,0.3,0.51,0.78,nan
+"Needle felting 7 mm, on solid subfloor",nan,0.02,0.04,0.12,0.2,0.36,0.57,nan
+"5 mm carpet with 5 mm felt underlay, on solid subfloor",nan,0.07,0.21,0.57,0.68,0.81,0.72,nan
+PVC floor covering (2.5 mm thick) on concrete floor,nan,0.01,0.02,0.01,0.03,0.05,0.05,nan
+Linoleum on concrete,nan,0.02,0.02,0.03,0.03,0.04,0.04,nan
+Veneered wood or particleboard close in front of solid substrate,nan,0.04,0.04,0.05,0.06,0.06,0.06,nan
+"4 mm hardboard, compartmented without insulation material, 60 mm from wall",nan,0.22,0.19,0.13,0.07,0.05,0.05,nan
+"4 mm hardboard, compartmented with 40 mm mineral wool slab, 60 mm from wall",nan,0.63,0.25,0.14,0.08,0.06,0.05,nan
+"4 mm hardboard, compartmented without insulation material, 120 mm from wall",nan,0.26,0.15,0.07,0.05,0.05,0.05,nan
+"4 mm plywood board, 40 mm mineral wool, 120 mm from wall",nan,0.77,0.33,0.16,0.08,0.07,0.03,nan
+"Plasterboard, 9.5 mm thick, 25 mm from wall",nan,0.27,0.17,0.1,0.09,0.11,0.12,nan
+"Plasterboard, 9.5 mm thick, 60 mm from wall, cavity compartmented",nan,0.3,0.1,0.05,0.07,0.09,0.08,nan
+Cinema screen,nan,0.1,0.13,0.36,0.31,0.29,0.2,nan
+Stage proscenium with decoration,nan,0.4,0.43,0.57,0.7,0.8,0.8,nan
+Bookshelves in libraries (per m² of surface),nan,0.3,0.39,0.39,0.31,0.29,0.21,nan
+Perforated bricks (cautious assumption),nan,0.1,0.2,0.44,0.55,0.44,0.22,nan
+"3.5 mm hardboard, 40 mm mineral wool, 30 mm wooden strips 750 mm × 500 mm boxes",nan,0.61,0.26,0.19,0.07,0.07,0.03,nan
+"15 mm mineral tile with fleece lining, 200 mm from bare ceiling, without additional insulation on the back",nan,0.5,0.65,0.7,0.85,1.0,1.0,nan
+"15 mm mineral tile fine-stitched, 200 mm from bare ceiling, without additional insulation on the back",nan,0.35,0.55,0.65,0.7,0.65,0.6,nan
+"15 mm mineral tile without stitching, 200 mm from bare ceiling, without additional insulation on the back",nan,0.15,0.15,0.1,0.15,0.15,0.1,nan
+"Perforated metal cassette, 16% perforated surface component, 2.5 mm perforation diameter, acoustic fleece, 200 mm from bare ceiling, without additional insulation on the back",nan,0.35,0.7,0.85,0.75,0.75,0.75,nan
+"20 mm recycled glass wool tile with micro-porous paint coating, 200 mm from bare ceiling, 100 mm low-frequency absorber on back",nan,0.75,0.95,0.95,1.0,1.0,1.0,nan
+"15 mm recycled glass wool tile, fleece coating, 200 mm from bare ceiling, without additional insulation on the back",nan,0.4,0.85,1.0,0.9,1.0,1.0,nan
+"Stretch ceiling, micro-perforated, 100 mm spacing or air space, no acoustic fleece in cavity space",nan,0.09,0.25,0.65,0.8,0.61,0.6,nan
+"Stretch ceiling, micro-perforated, 100 mm spacing or air space, 40 mm acoustic fleece right against rear wall",nan,0.28,0.69,1.0,0.89,0.75,0.71,nan
+"Plasterboard, grid ceiling 8/18 round holes, 15.5 % perforated area component, 200 mm from bare ceiling, acoustic fleece, without mineral wool overlay",nan,0.45,0.6,0.7,0.6,0.55,0.65,nan
+"Plasterboard, grid ceiling 8/18 round holes, 15.5 % perforated area component, 200 mm from bare ceiling, acoustic fleece, 20 mm mineral wool overlay",nan,0.5,0.65,0.7,0.65,0.6,0.7,nan
+"Plasterboard, grid ceiling 12/25 square holes, 7.8 % perforated area component, 200 mm from bare ceiling, acoustic fleece, 20 mm mineral wool overlay",nan,0.45,0.5,0.5,0.4,0.35,0.35,nan
+"Plasterboard, grid ceiling 12/25 square holes, 7.8 % perforated area component, 65 mm from bare ceiling, acoustic fleece, 20 mm mineral wool overlay",nan,0.4,0.45,0.5,0.45,0.4,0.3,nan
+"Wood wool lightweight tiles 35 mm, on the wall itself",nan,0.08,0.17,0.7,0.71,0.64,0.64,nan
+"Wood wool lightweight tiles 25 mm, cavity space empty, 50 mm from wall",nan,0.13,0.42,0.54,0.45,0.7,0.73,nan
+"Melamine resin foam, raw density 8 kg/m³ to 10 kg/m³, 30 mm thick",nan,0.12,0.31,0.66,0.86,0.87,0.92,nan
+"Melamine resin foam, raw density 8 kg/m³ to 10 kg/m³, 50 mm thick",nan,0.16,0.56,0.87,0.96,0.97,0.97,nan
+"40 mm mineral wool matting (20 kg/m³), without perforated metal cover",nan,0.11,0.36,0.68,0.88,0.89,0.97,nan
+"40 mm mineral wool matting (20 kg/m³), with perforated metal cover (18%)",nan,0.11,0.36,0.69,0.95,0.81,0.7,nan
+"Plasterboard 9.5 mm, 8/18 round holes, 15% perforated area component, lined on the back with fleece fabric, spacing 100 mm",nan,0.12,0.28,0.75,0.5,0.38,0.3,nan
+"Plasterboard, slotted, 8.8 % open area, lined on the back with fleece fabric, spacing 100 mm",nan,0.11,0.28,0.66,0.38,0.28,0.3,nan
+"Perforated extra-long metal cassette panel, 20% perforated area component, 3 mm hole diameter, acoustic felt, 300 mm spacing",nan,0.38,0.65,0.59,0.75,0.77,0.61,nan
+"Male in suit, seated",nan,0.15,0.25,0.55,0.8,0.9,0.9,nan
+"Female in summer dress, seated",nan,0.05,0.1,0.15,0.35,0.45,0.6,nan
+Single upholstered chair with artificial leather covering,nan,0.05,0.15,0.2,0.1,0.03,0.03,nan
+Single upholstered chair with textile covering,nan,0.15,0.25,0.3,0.35,0.4,0.4,nan
+"Individual person in a group, standing or seated, 1 person per 6 m² of area; typical minimum value",nan,0.05,0.1,0.2,0.35,0.5,0.65,nan
+"Cabinet with sound-absorptive shutter, without rear panel, 1200 mm, 5 box file levels (1.75 m) high, free-standing in the room",nan,1.63,1.84,1.31,1.63,1.54,1.56,nan
+"Cabinet with smooth shutter, without rear panel, 1200 mm wide, 5 box file levels (1.75 m) high, free-standing in the room",nan,0.83,0.76,0.52,0.48,0.41,0.45,nan
+"Cabinet 5 box file levels (1.75 m) high, perforated door and absorptive rear panel, 1200 mm wide, 435 mm deep, free-standing in the room",nan,1.95,2.0,2.44,2.85,2.84,2.43,nan
+"Wall panel, slightly absorptive, 1024 mm × 1590 mm × 63 mm, free-standing in the room",nan,0.51,0.78,1.22,1.72,2.43,2.83,nan
+"Wall panel, highly absorptive, 1024 mm × 1590 mm × 63 mm, free-standing in the room",nan,0.43,1.13,1.99,2.96,2.73,2.56,nan
+"Cabinet 4 box file levels (1.4 m) high, 1400 mm wide, 435 mm deep, acoustically active sliding door, acoustically active rear panel, free-standing in the room",nan,1.93,2.1,1.6,1.59,1.32,1.31,nan
+"Cabinet 4 box file levels (1.4 m) high, 1400 mm wide, 435 mm deep, acoustically active sliding door, acoustically active rear panel, standing directly in front of wall",nan,1.55,1.19,0.82,0.91,0.76,0.74,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel and front swing doors non-perforated, free-standing in the room",nan,1.35,0.61,0.52,0.26,0.14,0.1,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel and front swing doors perforated (non-woven insert), free-standing in the room",nan,2.5,2.22,2.6,2.6,2.45,2.62,nan
+"Cabinet 3 box file levels (1.05 m) high, 1500 mm wide, 350 mm deep, side panel, rear panel perforated (non-woven insert), front swing doors, free-standing in the room",nan,2.5,2.4,1.8,1.73,1.59,1.58,nan
+"Floating ceiling panel made from recycled glass wool with micro-porous paint coating, 2400 mm × 1200 mm, 40 mm thick, suspended 200 mm from bare ceiling",nan,0.9,2.4,3.4,4.0,4.1,3.8,nan
