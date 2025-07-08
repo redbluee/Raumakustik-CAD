@@ -115,6 +115,7 @@ layout = dbc.Container(
                             value="no requirements",
                             id="dropdown_room_usage",
                             clearable=False,
+                            searchable=False,
                             className="custom-dropdown", # Use custom style class
                         ),
                         html.Div(
