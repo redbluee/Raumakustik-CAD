@@ -256,7 +256,11 @@
         <span class="p">),</span>
         <span class="n">dbc</span><span class="o">.</span><span class="n">Modal</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="n">dbc</span><span class="o">.</span><span class="n">ModalHeader</span><span class="p">(</span><span class="n">dbc</span><span class="o">.</span><span class="n">ModalTitle</span><span class="p">(</span><span class="s2">&quot;Material selection&quot;</span><span class="p">),</span> <span class="n">close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">ModalHeader</span><span class="p">(</span>
+                    <span class="n">dbc</span><span class="o">.</span><span class="n">ModalTitle</span><span class="p">(</span><span class="s2">&quot;Material selection&quot;</span><span class="p">),</span> 
+                    <span class="n">close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                    <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">}</span>
+                <span class="p">),</span>
                 <span class="n">dbc</span><span class="o">.</span><span class="n">ModalBody</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;details-modal-body-content&quot;</span><span class="p">),</span>
                 <span class="n">dbc</span><span class="o">.</span><span class="n">ModalFooter</span><span class="p">(</span>
                     <span class="n">dbc</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
@@ -377,8 +381,15 @@
                     <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span> 
                         <span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;5px&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span>
                     <span class="p">},</span>
-                    <span class="n">style_header</span><span class="o">=</span><span class="p">{},</span>
+                    <span class="n">style_header</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s1">&#39;backgroundColor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(230, 230, 230)&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;fontWeight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span>
+                    <span class="p">},</span>
                     <span class="n">style_data_conditional</span><span class="o">=</span><span class="n">modal_s_d_c</span><span class="p">,</span>
                 <span class="p">)</span>
                 
