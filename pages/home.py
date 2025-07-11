@@ -123,13 +123,26 @@ layout = dbc.Container(
                         ),
                         html.Div(
                             [
-                                daq.ToggleSwitch(
-                                    id="my-toggle-switch",
-                                    value=False,
-                                    color="#3DED97",
-                                    size=40,
-                                    theme={"dark": True},
-                                )
+                                html.Br(),
+                                html.Label("Activate Air Damp"),
+                                html.Div(
+                                    [
+                                        html.Span("Off"),
+                                        daq.ToggleSwitch(
+                                            id="my-toggle-switch",
+                                            value=False,
+                                            color="#3DED97",
+                                            size=40,
+                                            theme={"dark": True},
+                                        ),
+                                        html.Span("On"),
+                                    ],
+                                    style={
+                                        "display": "flex",
+                                        "align-items": "center",
+                                        "gap": "10px",
+                                    },
+                                ),
                             ],
                             style={"textAlign": "left"},
                         ),
@@ -139,7 +152,7 @@ layout = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Loading(
-                            id="nachhallzeit-graph",
+                            id="reverberation-graph",
                             type="circle",
                             children=dcc.Graph(
                                 id="fig-transformed", className="my-graph"
