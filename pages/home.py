@@ -143,22 +143,8 @@ layout = dbc.Container(
                             ),
                         )
                     ],
-                    width=6,
+                    width=8,
                     className="multi-graph",
-                ),
-                dbc.Col(
-                    [
-                        html.H5(children="Report Generation"),
-                        html.Button(
-                            "Export PDF",
-                            id="export",
-                            n_clicks=0,
-                            title="The grid search may take several minutes",
-                            className="my-button",
-                        ),
-                    ],
-                    width=2,
-                    style={"text-align": "left", "margin": "5px 1px 1px 1px"},
                 ),
             ]
         ),
@@ -166,6 +152,7 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
+                        html.Br(),
                         html.H5(children="Definition of Room Surfaces"),
                         dash_table.DataTable(
                             id="flächen-tabelle",
@@ -218,6 +205,25 @@ layout = dbc.Container(
                             style={"marginTop": "10px"},
                         ),
                     ]
+                ),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Br(),
+                        html.H5(children="Report Generation"),
+                        html.Button(
+                            "Export PDF",
+                            id="export",
+                            n_clicks=0,
+                            title="The grid search may take several minutes",
+                            className="my-button",
+                        ),
+                    ],
+                    width=8,
+                    style={"text-align": "left", "margin": "5px 1px 1px 1px"},
                 ),
             ]
         ),
