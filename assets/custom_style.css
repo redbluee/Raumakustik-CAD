@@ -324,7 +324,7 @@ input[type="email"].custom-input:focus {
 /* override cell hover background on selected rows */
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover,
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover td.dash-cell.cell--selected {
-    background-color: transparent !important;
+    background-color: #0e2a2e !important;
 }
 
 /* === CUSTOM DATA TABLE CELL STYLES === */
