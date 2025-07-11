@@ -345,3 +345,6 @@ input[type="email"].custom-input:focus {
 #area-table .dash-cell.cell--selected div {
     color: #f6f6f6 !important;
 }
+.material-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover {
+    cursor: pointer;
+}
