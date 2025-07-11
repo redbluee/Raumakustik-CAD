@@ -71,7 +71,7 @@ layout = dbc.Container(
                         html.Br(),
                         dcc.Input(
                             type="number",
-                            placeholder="20",
+                            placeholder="3",
                             id="input_room_height",
                             min=0,
                             className="custom-input",  # Use custom style class
@@ -101,7 +101,7 @@ layout = dbc.Container(
                         html.Br(),
                         dcc.Input(
                             type="number",
-                            placeholder="101.35",
+                            placeholder="1013.5",
                             id="input_room_pressure",
                             min=0,
                             className="custom-input",  # Use custom style class
@@ -375,13 +375,14 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
     [
         Input('area-table', 'data'),
         Input("input_room_volume", "value"),
+        Input("input_room_height", "value"),
         Input("input_room_temperature", "value"),
         Input("input_room_humidity", "value"),
         Input("input_room_pressure", "value"),
         Input("dropdown_room_usage", "value"),
     ]
 )
-def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, room_usage):
+def update_graph_with_calculation(table_data, volume, height, temp, humidity, pressure, room_usage):
     """
     Update the graph based on all user inputs by calling the calculation module.
 
@@ -391,6 +392,8 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
         Data from the surface definition table.
     volume : float
         Room volume in cubic meters.
+    height : float, optional
+        Room height in meters.
     temp : float
         Room temperature in degrees Celsius.
     humidity : float
@@ -406,10 +409,11 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
         Updated figure with calculated reverberation time.
     """
     # Default values for numeric inputs
-    volume = float(volume) if volume else 0
-    temp = float(temp) if temp else 20
-    humidity = float(humidity) if humidity else 50
-    pressure = float(pressure) if pressure else 1013.25 # hPa
+    volume = float(volume) if volume is not None else 30
+    height = float(height) if height else None
+    temp = float(temp) if temp is not None else 20
+    humidity = float(humidity) if humidity is not None else 50
+    pressure = float(pressure) if pressure is not None else 1013.25 # hPa
 
     # Create a default empty figure
     fig = go.Figure()
@@ -427,6 +431,8 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
     try:
         # Create Room Object
         calc_room = reverberation_calc.room(volume)
+        if height:
+            calc_room.set_height(height)
         calc_room.set_temperature(temp)
         calc_room.set_rel_humidity(humidity)
         calc_room.set_pressure(pressure / 10) # Convert hPa to kPa
