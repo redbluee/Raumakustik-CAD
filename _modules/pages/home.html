@@ -37,8 +37,11 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash_bootstrap_components</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dbc</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">reverberation_calc</span>
 
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SPHINX_BUILD&quot;</span><span class="p">):</span>
@@ -102,7 +105,7 @@
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
-                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;3&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span>
                             <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
@@ -132,7 +135,7 @@
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
-                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;101.35&quot;</span><span class="p">,</span>
+                            <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;1013.5&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_pressure&quot;</span><span class="p">,</span>
                             <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
@@ -153,13 +156,26 @@
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
                             <span class="p">[</span>
-                                <span class="n">daq</span><span class="o">.</span><span class="n">ToggleSwitch</span><span class="p">(</span>
-                                    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span>
-                                    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#3DED97&quot;</span><span class="p">,</span>
-                                    <span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-                                    <span class="n">theme</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dark&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-                                <span class="p">)</span>
+                                <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                                <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Activate Air Damp&quot;</span><span class="p">),</span>
+                                <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
+                                    <span class="p">[</span>
+                                        <span class="n">html</span><span class="o">.</span><span class="n">Span</span><span class="p">(</span><span class="s2">&quot;Off&quot;</span><span class="p">),</span>
+                                        <span class="n">daq</span><span class="o">.</span><span class="n">ToggleSwitch</span><span class="p">(</span>
+                                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span>
+                                            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#3DED97&quot;</span><span class="p">,</span>
+                                            <span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+                                            <span class="n">theme</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dark&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                                        <span class="p">),</span>
+                                        <span class="n">html</span><span class="o">.</span><span class="n">Span</span><span class="p">(</span><span class="s2">&quot;On&quot;</span><span class="p">),</span>
+                                    <span class="p">],</span>
+                                    <span class="n">style</span><span class="o">=</span><span class="p">{</span>
+                                        <span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="s2">&quot;flex&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;align-items&quot;</span><span class="p">:</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;gap&quot;</span><span class="p">:</span> <span class="s2">&quot;10px&quot;</span><span class="p">,</span>
+                                    <span class="p">},</span>
+                                <span class="p">),</span>
                             <span class="p">],</span>
                             <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;textAlign&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">},</span>
                         <span class="p">),</span>
@@ -169,7 +185,7 @@
                 <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
                     <span class="p">[</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Loading</span><span class="p">(</span>
-                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;nachhallzeit-graph&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;reverberation-graph&quot;</span><span class="p">,</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
                             <span class="n">children</span><span class="o">=</span><span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span>
                                 <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fig-transformed&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-graph&quot;</span>
@@ -201,7 +217,7 @@
                     <span class="p">[</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Definition of Room Surfaces&quot;</span><span class="p">),</span>
                         <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
-                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;area-table&quot;</span><span class="p">,</span>
                             <span class="n">columns</span><span class="o">=</span><span class="n">table_columns</span><span class="p">,</span>
                             <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">initial_empty_row</span><span class="p">],</span>
                             <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -245,7 +261,7 @@
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
                             <span class="s2">&quot;Add Row&quot;</span><span class="p">,</span>
-                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;add-fläche-row-button&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;add-area-row-button&quot;</span><span class="p">,</span>
                             <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
                             <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;marginTop&quot;</span><span class="p">:</span> <span class="s2">&quot;10px&quot;</span><span class="p">},</span>
@@ -282,15 +298,15 @@
 <span class="c1"># Page Callbacks</span>
 
 <span class="c1"># Callback for adding a row</span>
-<div class="viewcode-block" id="add_row_to_flächen_tabelle">
-<a class="viewcode-back" href="../../gui.html#pages.home.add_row_to_flächen_tabelle">[docs]</a>
+<div class="viewcode-block" id="add_row_to_area_table">
+<a class="viewcode-back" href="../../gui.html#pages.home.add_row_to_area_table">[docs]</a>
 <span class="nd">@callback</span><span class="p">(</span>
-    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># allow_duplicate needed if another callback modifies data</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;add-fläche-row-button&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
-    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># allow_duplicate needed if another callback modifies data</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;add-area-row-button&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_flächen_tabelle</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_area_table</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">new_row_data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)}</span>
@@ -305,11 +321,11 @@
 <span class="nd">@callback</span><span class="p">(</span>
     <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
     <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal-body-content&quot;</span><span class="p">,</span> <span class="s2">&quot;children&quot;</span><span class="p">),</span>
-    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;flächen-tabelle&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Keep allow_duplicate if other callbacks modify data</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span> <span class="s2">&quot;active_cell&quot;</span><span class="p">),</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Keep allow_duplicate if other callbacks modify data</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;area-table&quot;</span><span class="p">,</span> <span class="s2">&quot;active_cell&quot;</span><span class="p">),</span>
     <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">,</span> <span class="s2">&quot;n_clicks&quot;</span><span class="p">),</span>
     <span class="n">State</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
-    <span class="n">State</span><span class="p">(</span><span class="s2">&quot;flächen-tabelle&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span> 
+    <span class="n">State</span><span class="p">(</span><span class="s2">&quot;area-table&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span> 
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">handle_table_interactions</span><span class="p">(</span><span class="n">active_cell</span><span class="p">,</span> <span class="n">close_clicks</span><span class="p">,</span> <span class="n">modal_is_open</span><span class="p">,</span> <span class="n">table_data</span><span class="p">):</span>
@@ -406,50 +422,192 @@
 
 
 
-<span class="c1"># Existing Callbacks</span>
-<div class="viewcode-block" id="update_graph">
-<a class="viewcode-back" href="../../gui.html#pages.home.update_graph">[docs]</a>
+<span class="c1"># Connect all inputs to the calculation module and update the graph</span>
+<div class="viewcode-block" id="update_graph_with_calculation">
+<a class="viewcode-back" href="../../gui.html#pages.home.update_graph_with_calculation">[docs]</a>
 <span class="nd">@callback</span><span class="p">(</span>
     <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fig-transformed&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;dropdown_room_usage&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="p">[</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_humidity&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;input_room_pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;dropdown_room_usage&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+        <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;my-toggle-switch&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
 <span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">update_graph</span><span class="p">(</span><span class="n">room_usage</span><span class="p">,</span> <span class="n">switch_value</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_graph_with_calculation</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">humidity</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">room_usage</span><span class="p">,</span> <span class="n">air_damp_activated</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Update the graph based on user inputs.</span>
+<span class="sd">    Update the graph based on all user inputs by calling the calculation module.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    room_usage : str</span>
-<span class="sd">        Selected room usage type.</span>
-<span class="sd">    switch_value : bool</span>
-<span class="sd">        State of the toggle switch.</span>
+<span class="sd">    table_data : list of dicts</span>
+<span class="sd">        Data from the surface definition table.</span>
 <span class="sd">    volume : float</span>
 <span class="sd">        Room volume in cubic meters.</span>
+<span class="sd">    height : float, optional</span>
+<span class="sd">        Room height in meters.</span>
 <span class="sd">    temp : float</span>
 <span class="sd">        Room temperature in degrees Celsius.</span>
-<span class="sd">    height : float</span>
-<span class="sd">        Room height in meters.</span>
+<span class="sd">    humidity : float</span>
+<span class="sd">        Relative humidity in percent.</span>
+<span class="sd">    pressure : float</span>
+<span class="sd">        Air pressure in hPa.</span>
+<span class="sd">    room_usage : str</span>
+<span class="sd">        Selected room usage type.</span>
+<span class="sd">    air_damp_activated : bool</span>
+<span class="sd">        State of the air dampening toggle switch.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    fig : plotly.graph_objects.Figure</span>
-<span class="sd">        Updated figure with new data.</span>
+<span class="sd">        Updated figure with calculated reverberation time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Usage Type: </span><span class="si">{</span><span class="n">room_usage</span><span class="si">}</span><span class="s2">, Switch: </span><span class="si">{</span><span class="n">switch_value</span><span class="si">}</span><span class="s2">, &quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;Vol: </span><span class="si">{</span><span class="n">volume</span><span class="si">}</span><span class="s2">, Temp: </span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2">, Height: </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="c1"># Default values for numeric inputs</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">30</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">20</span>
+    <span class="n">humidity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">humidity</span><span class="p">)</span> <span class="k">if</span> <span class="n">humidity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">50</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span> <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1013.25</span> <span class="c1"># hPa</span>
+
+    <span class="c1"># Standard octave bands for the x-axis</span>
+    <span class="n">frequency_bands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">63</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">]</span>
+
+    <span class="c1"># Create a default empty figure and pre-format the axes</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Please provide room volume and surface data for calculation&quot;</span><span class="p">,</span>
+        <span class="n">template</span><span class="o">=</span><span class="s2">&quot;plotly_dark&quot;</span><span class="p">,</span>
+        <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s2">&quot;rgba(0,0,0,0)&quot;</span><span class="p">,</span>
+        <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s2">&quot;rgba(0,0,0,0)&quot;</span><span class="p">,</span>
+        <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;#f6f6f6&quot;</span><span class="p">,</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+            <span class="n">tickvals</span><span class="o">=</span><span class="n">frequency_bands</span><span class="p">,</span>
+            <span class="n">ticktext</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency_bands</span><span class="p">],</span>
+            <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Frequency in Hz&quot;</span><span class="p">,</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">10000</span><span class="p">)]</span>  <span class="c1"># Set a fixed range for log axis</span>
+        <span class="p">),</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time in s&quot;</span>
     <span class="p">)</span>
-    <span class="n">y_values</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="nb">float</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="k">if</span> <span class="n">volume</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="k">if</span> <span class="n">height</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span>
-    <span class="p">]</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y_values</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">volume</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">table_data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fig</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Create Room Object</span>
+        <span class="n">calc_room</span> <span class="o">=</span> <span class="n">reverberation_calc</span><span class="o">.</span><span class="n">room</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">height</span><span class="p">:</span>
+            <span class="n">calc_room</span><span class="o">.</span><span class="n">set_height</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">calc_room</span><span class="o">.</span><span class="n">set_temperature</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">calc_room</span><span class="o">.</span><span class="n">set_rel_humidity</span><span class="p">(</span><span class="n">humidity</span><span class="p">)</span>
+        <span class="n">calc_room</span><span class="o">.</span><span class="n">set_pressure</span><span class="p">(</span><span class="n">pressure</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Convert hPa to kPa</span>
+
+        <span class="c1"># Create Surface Objects</span>
+        <span class="n">surfaces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table_data</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Use a helper to safely convert values to float, defaulting to np.nan for empty strings</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">safe_float</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># Return NaN if the value is an empty string or cannot be converted</span>
+                        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                <span class="n">area</span> <span class="o">=</span> <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-2&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">area</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">area</span><span class="p">):</span>
+                    <span class="n">absorb_coeffs</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-5&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-6&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-7&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-8&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-9&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-10&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-11&#39;</span><span class="p">)),</span>
+                        <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-12&#39;</span><span class="p">))</span>
+                    <span class="p">]</span>
+                    <span class="n">mat_name</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-4&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;Unnamed Material&quot;</span>
+                    <span class="n">surface_name</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-1&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;Unnamed Surface&quot;</span>
+                    
+                    <span class="n">material</span> <span class="o">=</span> <span class="n">reverberation_calc</span><span class="o">.</span><span class="n">material</span><span class="p">(</span><span class="n">mat_name</span><span class="p">,</span> <span class="n">absorb_coeffs</span><span class="p">)</span>
+                    <span class="n">surface</span> <span class="o">=</span> <span class="n">reverberation_calc</span><span class="o">.</span><span class="n">surface</span><span class="p">(</span><span class="n">surface_name</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">material</span><span class="p">)</span>
+                    <span class="n">surfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="c1"># This will now primarily catch issues if the row structure is unexpected</span>
+                <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">surfaces</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Valid surface data is required for calculation.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fig</span>
+
+        <span class="c1"># Calculate reverberation time</span>
+        <span class="n">reverb_obj</span> <span class="o">=</span> <span class="n">reverberation_calc</span><span class="o">.</span><span class="n">reverberation_time</span><span class="p">(</span><span class="n">calc_room</span><span class="p">,</span> <span class="n">surfaces</span><span class="p">,</span> <span class="n">air_damp_calc</span><span class="o">=</span><span class="n">air_damp_activated</span><span class="p">)</span>
+        <span class="n">df_reverb</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="n">reverb_obj</span><span class="o">.</span><span class="n">frequency_bands</span><span class="p">,</span>
+            <span class="s1">&#39;Reverberation Time&#39;</span><span class="p">:</span> <span class="n">reverb_obj</span><span class="o">.</span><span class="n">reverberation_time</span>
+        <span class="p">})</span>
+
+        <span class="c1"># Get target reverberation time range</span>
+        <span class="k">if</span> <span class="n">room_usage</span> <span class="o">!=</span> <span class="s2">&quot;no requirements&quot;</span><span class="p">:</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="n">reverberation_calc</span><span class="o">.</span><span class="n">DIN_18041_limits</span><span class="p">(</span><span class="n">calc_room</span><span class="p">,</span> <span class="n">room_usage</span><span class="p">)</span>
+            <span class="n">df_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                <span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="n">reverb_obj</span><span class="o">.</span><span class="n">frequency_bands</span><span class="p">,</span>
+                <span class="s1">&#39;T_max&#39;</span><span class="p">:</span> <span class="n">limits</span><span class="o">.</span><span class="n">T_upper_limit</span><span class="p">,</span>
+                <span class="s1">&#39;T_min&#39;</span><span class="p">:</span> <span class="n">limits</span><span class="o">.</span><span class="n">T_lower_limit</span>
+            <span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+
+        <span class="c1"># Plotting</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">df_reverb</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">],</span> 
+            <span class="n">y</span><span class="o">=</span><span class="n">df_reverb</span><span class="p">[</span><span class="s1">&#39;Reverberation Time&#39;</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines+markers&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reverberation Time (T)&#39;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#3DED97&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="p">))</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">df_target</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">],</span>
+                <span class="n">fill</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;rgba(255,107,107,0.5)&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Target Range (Upper)&#39;</span>
+            <span class="p">))</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_min&#39;</span><span class="p">],</span>
+                <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;tonexty&#39;</span><span class="p">,</span> <span class="c1"># fill area between trace0 and trace1</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;rgba(255,107,107,0.5)&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Target Range (Lower)&#39;</span>
+            <span class="p">))</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Reverberation Time Calculation&quot;</span><span class="p">,</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time (s)&quot;</span><span class="p">,</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+                <span class="n">tickvals</span><span class="o">=</span><span class="n">frequency_bands</span><span class="p">,</span>
+                <span class="n">ticktext</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frequency_bands</span><span class="p">],</span>
+                <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">10000</span><span class="p">)]</span>  <span class="c1"># Also set range here for consistency</span>
+            <span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="n">yanchor</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">,</span> <span class="n">xanchor</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">fig</span></div>
 
 </pre></div>
