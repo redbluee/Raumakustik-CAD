@@ -320,3 +320,9 @@ input[type="email"].custom-input:focus {
     color: #f6f6f6 !important; /* Ensure label text is light */
     margin-left: 10px; /* Example spacing if label is next to switch */
 }
+
+/* override cell hover background on selected rows */
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover,
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover td.dash-cell.cell--selected {
+    background-color: transparent !important;
+}
