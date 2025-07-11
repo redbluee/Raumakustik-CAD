@@ -326,3 +326,22 @@ input[type="email"].custom-input:focus {
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover td.dash-cell.cell--selected {
     background-color: transparent !important;
 }
+
+/* === CUSTOM DATA TABLE CELL STYLES === */
+
+/*
+ * This selector targets the input field when a cell is being edited.
+ * It overrides the default Dash style that uses `var(--text-color)`.
+ * No more grey font on dark background.
+*/
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner input:not([type=radio]):not([type=checkbox]) {
+    color: #f6f6f6 !important; /* Ensure text is light during editing */
+}
+
+/*
+ * This selector ensures that when a cell is selected (but not in edit mode),
+ * the text color is also light.
+*/
+#area-table .dash-cell.cell--selected div {
+    color: #f6f6f6 !important;
+}
