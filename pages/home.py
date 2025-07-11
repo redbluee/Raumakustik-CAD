@@ -4,6 +4,7 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import os
@@ -441,17 +442,27 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
         surfaces = []
         for row in table_data:
             try:
-                area = float(row.get('col-2'))
-                if area > 0:
+                # Use a helper to safely convert values to float, defaulting to np.nan for empty strings
+                def safe_float(val):
+                    try:
+                        # Return NaN if the value is an empty string or cannot be converted
+                        if val == '':
+                            return np.nan
+                        return float(val)
+                    except (ValueError, TypeError):
+                        return np.nan
+
+                area = safe_float(row.get('col-2'))
+                if area > 0 and not np.isnan(area):
                     absorb_coeffs = [
-                        float(row.get('col-5', 0)),
-                        float(row.get('col-6', 0)),
-                        float(row.get('col-7', 0)),
-                        float(row.get('col-8', 0)),
-                        float(row.get('col-9', 0)),
-                        float(row.get('col-10', 0)),
-                        float(row.get('col-11', 0)),
-                        float(row.get('col-12', 0))
+                        safe_float(row.get('col-5')),
+                        safe_float(row.get('col-6')),
+                        safe_float(row.get('col-7')),
+                        safe_float(row.get('col-8')),
+                        safe_float(row.get('col-9')),
+                        safe_float(row.get('col-10')),
+                        safe_float(row.get('col-11')),
+                        safe_float(row.get('col-12'))
                     ]
                     mat_name = row.get('col-4') or "Unnamed Material"
                     surface_name = row.get('col-1') or "Unnamed Surface"
@@ -460,7 +471,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                     surface = reverberation_calc.surface(surface_name, area, material)
                     surfaces.append(surface)
             except (ValueError, TypeError):
-                # Skip rows with invalid data
+                # This will now primarily catch issues if the row structure is unexpected
                 continue
 
         if not surfaces:
