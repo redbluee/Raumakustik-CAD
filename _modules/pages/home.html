@@ -128,7 +128,7 @@
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
-                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Relative Humidity</span><span class="se">\u00A0</span><span class="s2">%&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Relative Humidity&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
@@ -138,7 +138,7 @@
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
-                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;Air Pressure</span><span class="se">\u00A0</span><span class="s2">hPa&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Air Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;hPa&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
@@ -270,7 +270,7 @@
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
                             <span class="s2">&quot;Add Row&quot;</span><span class="p">,</span>
-                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;add-area-row-button&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;add-row-button&quot;</span><span class="p">,</span>
                             <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
                             <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;marginTop&quot;</span><span class="p">:</span> <span class="s2">&quot;10px&quot;</span><span class="p">},</span>
@@ -308,15 +308,15 @@
 <span class="c1"># Page Callbacks</span>
 
 <span class="c1"># Callback for adding a row</span>
-<div class="viewcode-block" id="add_row_to_area_table">
-<a class="viewcode-back" href="../../gui.html#pages.home.add_row_to_area_table">[docs]</a>
+<div class="viewcode-block" id="add_row_to_surface_table">
+<a class="viewcode-back" href="../../gui.html#pages.home.add_row_to_surface_table">[docs]</a>
 <span class="nd">@callback</span><span class="p">(</span>
     <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># allow_duplicate needed if another callback modifies data</span>
-    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;add-area-row-button&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;add-row-button&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
     <span class="n">State</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_area_table</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_surface_table</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">new_row_data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)}</span>
