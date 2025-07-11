@@ -574,7 +574,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             ))
 
         fig.update_layout(
-            title_text="Reverberation Time Calculation",
+            title_text="Reverberation Time Calculation with DIN 18041 requirements",
             xaxis_title="Frequency (Hz)",
             yaxis_title="Reverberation Time (s)",
             xaxis=dict(
