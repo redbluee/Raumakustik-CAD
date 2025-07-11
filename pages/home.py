@@ -190,6 +190,8 @@ layout = dbc.Container(
                                 "backgroundColor": "#0e2a2e",
                                 "color": "#f6f6f6",
                                 "border": "1px solid #042f33",
+                                'whiteSpace': 'normal',
+                                'height': 'auto',
                             },
                             style_header={
                                 "backgroundColor": "#042f33",
@@ -337,13 +339,14 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
                         id='material-selection-table',
                         columns=[{"name": i, "id": i} for i in df_materials.columns],
                         data=df_materials.to_dict('records'),
-                        row_selectable='single',
                         style_table={'overflowY': 'auto', 'height': '400px', 'overflowX': 'auto', 'minWidth': '100%'},
                         style_cell={
                             'textAlign': 'left',
                             'padding': '5px',
                             'color': 'black',
-                            'border': '1px solid black'
+                            'border': '1px solid black',
+                            'whiteSpace': 'normal',
+                            'height': 'auto'
                         },
                         style_header={
                             'backgroundColor': 'rgb(230, 230, 230)',
@@ -352,7 +355,10 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
                             'border': '1px solid black'
                         },
                     )
-                    new_modal_content = modal_table_component
+                    new_modal_content = html.Div(
+                        modal_table_component, 
+                        className='material-table-container'
+                    )
                 else:
                     new_modal_content = html.Div("Material database (materials.csv) not found.")
                 
@@ -371,17 +377,17 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
 @callback(
     Output('area-table', 'data', allow_duplicate=True),
     Output('details-modal', 'is_open', allow_duplicate=True),
-    Input('material-selection-table', 'selected_rows'),
+    Input('material-selection-table', 'active_cell'),
     State('material-selection-table', 'data'),
     State('active-row-index-store', 'data'),
     State('area-table', 'data'),
     prevent_initial_call=True
 )
-def update_area_table_with_material(selected_rows, material_data, active_row_index, area_table_data):
-    if not selected_rows or active_row_index is None:
+def update_area_table_with_material(active_cell, material_data, active_row_index, area_table_data):
+    if not active_cell or active_row_index is None:
         return dash.no_update, dash.no_update
 
-    selected_material_row_index = selected_rows[0]
+    selected_material_row_index = active_cell['row']
     selected_material = material_data[selected_material_row_index]
 
     # The row from area-table to be updated
