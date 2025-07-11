@@ -409,7 +409,7 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
     volume = float(volume) if volume else 0
     temp = float(temp) if temp else 20
     humidity = float(humidity) if humidity else 50
-    pressure = float(pressure) if pressure else 1013.25
+    pressure = float(pressure) if pressure else 1013.25 # hPa
 
     # Create a default empty figure
     fig = go.Figure()
@@ -425,43 +425,60 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
         return fig
 
     try:
-        # Convert table data to DataFrame
-        df_area = pd.DataFrame(table_data)
-        
-        # Define new column names for clarity
-        column_mapping = {
-            'col-2': 'Area',
-            'col-5': '63', 'col-6': '125', 'col-7': '250', 'col-8': '500',
-            'col-9': '1000', 'col-10': '2000', 'col-11': '4000', 'col-12': '8000'
-        }
-        df_area = df_area.rename(columns=column_mapping)
+        # Create Room Object
+        calc_room = reverberation_calc.room(volume)
+        calc_room.set_temperature(temp)
+        calc_room.set_rel_humidity(humidity)
+        calc_room.set_pressure(pressure / 10) # Convert hPa to kPa
 
-        # Select and convert only the necessary numeric columns
-        numeric_cols = list(column_mapping.values())
-        for col in numeric_cols:
-            df_area[col] = pd.to_numeric(df_area[col], errors='coerce')
-        
-        # Drop rows where essential data (Area or any alpha) is missing
-        df_area.dropna(subset=numeric_cols, inplace=True)
+        # Create Surface Objects
+        surfaces = []
+        for row in table_data:
+            try:
+                area = float(row.get('col-2'))
+                if area > 0:
+                    absorb_coeffs = [
+                        float(row.get('col-5', 0)),
+                        float(row.get('col-6', 0)),
+                        float(row.get('col-7', 0)),
+                        float(row.get('col-8', 0)),
+                        float(row.get('col-9', 0)),
+                        float(row.get('col-10', 0)),
+                        float(row.get('col-11', 0)),
+                        float(row.get('col-12', 0))
+                    ]
+                    mat_name = row.get('col-4') or "Unnamed Material"
+                    surface_name = row.get('col-1') or "Unnamed Surface"
+                    
+                    material = reverberation_calc.material(mat_name, absorb_coeffs)
+                    surface = reverberation_calc.surface(surface_name, area, material)
+                    surfaces.append(surface)
+            except (ValueError, TypeError):
+                # Skip rows with invalid data
+                continue
 
-        if df_area.empty:
+        if not surfaces:
             fig.update_layout(title_text="Valid surface data is required for calculation.")
             return fig
 
         # Calculate reverberation time
-        df_reverb = reverberation_calc.calculate_reverberation_time(
-            volume=volume,
-            area=df_area,
-            temperature=temp,
-            humidity=humidity,
-            pressure=pressure
-        )
+        reverb_obj = reverberation_calc.reverberation_time(calc_room, surfaces, air_damp_calc=True)
+        df_reverb = pd.DataFrame({
+            'Frequency': reverb_obj.frequency_bands,
+            'Reverberation Time': reverb_obj.reverberation_time
+        })
 
         # Get target reverberation time range
-        df_target = reverberation_calc.get_target_reverb_time(
-            nutzung=room_usage,
-            volumen=volume
-        )
+        if room_usage != "no requirements":
+            limits = reverberation_calc.DIN_18041_limits(calc_room, room_usage)
+            df_target = pd.DataFrame({
+                'Frequency': reverb_obj.frequency_bands,
+                'T_max': limits.T_upper_limit,
+                'T_min': limits.T_lower_limit
+            })
+        else:
+            df_target = pd.DataFrame()
+
 
         # Plotting
         fig.add_trace(go.Scatter(
@@ -471,22 +488,24 @@ def update_graph_with_calculation(table_data, volume, temp, humidity, pressure, 
             name='Reverberation Time (T)',
             line=dict(color='#3DED97', width=3)
         ))
-        fig.add_trace(go.Scatter(
-            x=df_target['Frequency'],
-            y=df_target['T_max'],
-            fill=None,
-            mode='lines',
-            line_color='rgba(255,107,107,0.5)',
-            name='Target Range (Upper)'
-        ))
-        fig.add_trace(go.Scatter(
-            x=df_target['Frequency'],
-            y=df_target['T_min'],
-            fill='tonexty', # fill area between trace0 and trace1
-            mode='lines',
-            line_color='rgba(255,107,107,0.5)',
-            name='Target Range (Lower)'
-        ))
+        
+        if not df_target.empty:
+            fig.add_trace(go.Scatter(
+                x=df_target['Frequency'],
+                y=df_target['T_max'],
+                fill=None,
+                mode='lines',
+                line_color='rgba(255,107,107,0.5)',
+                name='Target Range (Upper)'
+            ))
+            fig.add_trace(go.Scatter(
+                x=df_target['Frequency'],
+                y=df_target['T_min'],
+                fill='tonexty', # fill area between trace0 and trace1
+                mode='lines',
+                line_color='rgba(255,107,107,0.5)',
+                name='Target Range (Lower)'
+            ))
 
         fig.update_layout(
             title_text="Reverberation Time Calculation",
