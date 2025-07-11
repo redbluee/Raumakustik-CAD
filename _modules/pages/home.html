@@ -199,22 +199,8 @@
                             <span class="p">),</span>
                         <span class="p">)</span>
                     <span class="p">],</span>
-                    <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
                     <span class="n">className</span><span class="o">=</span><span class="s2">&quot;multi-graph&quot;</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
-                    <span class="p">[</span>
-                        <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Report Generation&quot;</span><span class="p">),</span>
-                        <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-                            <span class="s2">&quot;Export PDF&quot;</span><span class="p">,</span>
-                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;export&quot;</span><span class="p">,</span>
-                            <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The grid search may take several minutes&quot;</span><span class="p">,</span>
-                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
-                        <span class="p">),</span>
-                    <span class="p">],</span>
-                    <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5px 1px 1px 1px&quot;</span><span class="p">},</span>
                 <span class="p">),</span>
             <span class="p">]</span>
         <span class="p">),</span>
@@ -222,6 +208,7 @@
             <span class="p">[</span>
                 <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
                     <span class="p">[</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Definition of Room Surfaces&quot;</span><span class="p">),</span>
                         <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;area-table&quot;</span><span class="p">,</span>
@@ -276,6 +263,25 @@
                             <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;marginTop&quot;</span><span class="p">:</span> <span class="s2">&quot;10px&quot;</span><span class="p">},</span>
                         <span class="p">),</span>
                     <span class="p">]</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">H5</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="s2">&quot;Report Generation&quot;</span><span class="p">),</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+                            <span class="s2">&quot;Export PDF&quot;</span><span class="p">,</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;export&quot;</span><span class="p">,</span>
+                            <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The grid search may take several minutes&quot;</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">],</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5px 1px 1px 1px&quot;</span><span class="p">},</span>
                 <span class="p">),</span>
             <span class="p">]</span>
         <span class="p">),</span>
