@@ -48,6 +48,12 @@
     <span class="n">dash</span><span class="o">.</span><span class="n">register_page</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Reverbation | Home&quot;</span><span class="p">)</span>
 
 
+<span class="c1"># Load material database</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">df_materials</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;materials.csv&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="n">df_materials</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
 <span class="c1"># Define Dropdown Data</span>
 <span class="n">df_room_usage</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;no requirements&quot;</span><span class="p">,</span> <span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;A2&quot;</span><span class="p">,</span> <span class="s2">&quot;A3&quot;</span><span class="p">,</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="s2">&quot;A5&quot;</span><span class="p">,</span> <span class="s2">&quot;B1&quot;</span><span class="p">,</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span> <span class="s2">&quot;B5&quot;</span><span class="p">]}</span>
@@ -81,6 +87,7 @@
 <span class="c1"># Page Layout</span>
 <span class="n">layout</span> <span class="o">=</span> <span class="n">dbc</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
     <span class="p">[</span>
+        <span class="n">dcc</span><span class="o">.</span><span class="n">Store</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;active-row-index-store&#39;</span><span class="p">),</span>
         <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">([</span><span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span><span class="s2">&quot;Reverberation Optimization&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;app-brand&quot;</span><span class="p">)]),</span>
@@ -229,6 +236,8 @@
                                 <span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#0e2a2e&quot;</span><span class="p">,</span>
                                 <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#f6f6f6&quot;</span><span class="p">,</span>
                                 <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid #042f33&quot;</span><span class="p">,</span>
+                                <span class="s1">&#39;whiteSpace&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span>
                             <span class="p">},</span>
                             <span class="n">style_header</span><span class="o">=</span><span class="p">{</span>
                                 <span class="s2">&quot;backgroundColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#042f33&quot;</span><span class="p">,</span>
@@ -290,6 +299,7 @@
             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span>
             <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">is_open</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="s2">&quot;xl&quot;</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">]</span>
 <span class="p">)</span>
@@ -322,6 +332,7 @@
     <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
     <span class="n">Output</span><span class="p">(</span><span class="s2">&quot;details-modal-body-content&quot;</span><span class="p">,</span> <span class="s2">&quot;children&quot;</span><span class="p">),</span>
     <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Keep allow_duplicate if other callbacks modify data</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;active-row-index-store&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
     <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;area-table&quot;</span><span class="p">,</span> <span class="s2">&quot;active_cell&quot;</span><span class="p">),</span>
     <span class="n">Input</span><span class="p">(</span><span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">,</span> <span class="s2">&quot;n_clicks&quot;</span><span class="p">),</span>
     <span class="n">State</span><span class="p">(</span><span class="s2">&quot;details-modal&quot;</span><span class="p">,</span> <span class="s2">&quot;is_open&quot;</span><span class="p">),</span>
@@ -360,10 +371,11 @@
     <span class="n">new_modal_state</span> <span class="o">=</span> <span class="n">modal_is_open</span>
     <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span>
     <span class="n">new_table_data</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span> 
+    <span class="n">stored_row_index</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span>
 
     <span class="k">if</span> <span class="n">triggered_id</span> <span class="o">==</span> <span class="s2">&quot;close-details-modal-button&quot;</span><span class="p">:</span>
         <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span>
+        <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span><span class="p">,</span> <span class="n">stored_row_index</span>
 
     <span class="k">if</span> <span class="n">active_cell</span> <span class="ow">and</span> <span class="n">table_data</span><span class="p">:</span>
         <span class="n">row_index</span> <span class="o">=</span> <span class="n">active_cell</span><span class="p">[</span><span class="s2">&quot;row&quot;</span><span class="p">]</span>
@@ -372,53 +384,82 @@
         <span class="k">if</span> <span class="n">row_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">table_data</span><span class="p">):</span>
             <span class="c1"># Click action on DB icon in the main table</span>
             <span class="k">if</span> <span class="n">col_id</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span><span class="p">:</span>
-                <span class="n">selected_row_data</span> <span class="o">=</span> <span class="n">table_data</span><span class="p">[</span><span class="n">row_index</span><span class="p">]</span>
-
-                <span class="c1"># Prepare columns for the modal table:</span>
-                <span class="c1"># table_columns is defined globally</span>
-                <span class="n">modal_table_display_columns</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">col_def</span> <span class="ow">in</span> <span class="n">table_columns</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">col_def</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;col-3&#39;</span><span class="p">,</span> <span class="s1">&#39;col-delete&#39;</span><span class="p">]:</span> <span class="c1"># Exclude DB and Delete columns</span>
-                        <span class="n">modal_col</span> <span class="o">=</span> <span class="n">col_def</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                        <span class="n">modal_col</span><span class="p">[</span><span class="s1">&#39;editable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># Make all columns non-editable in the modal</span>
-                        <span class="n">modal_table_display_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modal_col</span><span class="p">)</span>
+                <span class="n">stored_row_index</span> <span class="o">=</span> <span class="n">row_index</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">df_materials</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="n">modal_table_component</span> <span class="o">=</span> <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;material-selection-table&#39;</span><span class="p">,</span>
+                        <span class="n">columns</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df_materials</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">df_materials</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">),</span>
+                        <span class="n">style_table</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;overflowY&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;400px&#39;</span><span class="p">,</span> <span class="s1">&#39;overflowX&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;minWidth&#39;</span><span class="p">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">},</span>
+                        <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;5px&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;whiteSpace&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span>
+                        <span class="p">},</span>
+                        <span class="n">style_header</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s1">&#39;backgroundColor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(230, 230, 230)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;fontWeight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span>
+                        <span class="p">},</span>
+                    <span class="p">)</span>
+                    <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
+                        <span class="n">modal_table_component</span><span class="p">,</span> 
+                        <span class="n">className</span><span class="o">=</span><span class="s1">&#39;material-table-container&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span><span class="s2">&quot;Material database (materials.csv) not found.&quot;</span><span class="p">)</span>
                 
-                <span class="c1"># The data for the modal table is the single selected row, wrapped in a list</span>
-                <span class="n">modal_table_display_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">selected_row_data</span><span class="p">]</span>
-                
-                <span class="c1"># Modal style_data_conditional</span>
-                <span class="n">modal_s_d_c</span> <span class="o">=</span> <span class="p">[]</span>
-
-                <span class="n">modal_table_component</span> <span class="o">=</span> <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
-                    <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;modal-detail-display-table&#39;</span><span class="p">,</span> 
-                    <span class="n">columns</span><span class="o">=</span><span class="n">modal_table_display_columns</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">modal_table_display_data</span><span class="p">,</span>
-                    <span class="n">style_table</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;overflowX&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;minWidth&#39;</span><span class="p">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">},</span>
-                    <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span> 
-                        <span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;5px&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span>
-                    <span class="p">},</span>
-                    <span class="n">style_header</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;backgroundColor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(230, 230, 230)&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;fontWeight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="s1">&#39;1px solid black&#39;</span>
-                    <span class="p">},</span>
-                    <span class="n">style_data_conditional</span><span class="o">=</span><span class="n">modal_s_d_c</span><span class="p">,</span>
-                <span class="p">)</span>
-                
-                <span class="n">new_modal_content</span> <span class="o">=</span> <span class="n">modal_table_component</span>
                 <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">True</span>
             
             <span class="k">elif</span> <span class="n">col_id</span> <span class="o">==</span> <span class="s2">&quot;col-delete&quot;</span><span class="p">:</span> <span class="c1"># Click on Delete icon in the main table</span>
                 <span class="n">updated_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table_data</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">row_index</span><span class="p">]</span>
                 <span class="n">new_table_data</span> <span class="o">=</span> <span class="n">updated_rows</span>
                 <span class="n">new_modal_state</span> <span class="o">=</span> <span class="kc">False</span> 
-                <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span>
+                <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span><span class="p">,</span> <span class="n">stored_row_index</span>
         
-    <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span></div>
+    <span class="k">return</span> <span class="n">new_modal_state</span><span class="p">,</span> <span class="n">new_modal_content</span><span class="p">,</span> <span class="n">new_table_data</span><span class="p">,</span> <span class="n">stored_row_index</span></div>
+
+
+
+<span class="c1"># Callback to update area-table with selected material</span>
+<div class="viewcode-block" id="update_area_table_with_material">
+<a class="viewcode-back" href="../../gui.html#pages.home.update_area_table_with_material">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;details-modal&#39;</span><span class="p">,</span> <span class="s1">&#39;is_open&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;material-selection-table&#39;</span><span class="p">,</span> <span class="s1">&#39;active_cell&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;material-selection-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;active-row-index-store&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_area_table_with_material</span><span class="p">(</span><span class="n">active_cell</span><span class="p">,</span> <span class="n">material_data</span><span class="p">,</span> <span class="n">active_row_index</span><span class="p">,</span> <span class="n">area_table_data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">active_cell</span> <span class="ow">or</span> <span class="n">active_row_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span><span class="p">,</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span>
+
+    <span class="n">selected_material_row_index</span> <span class="o">=</span> <span class="n">active_cell</span><span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">]</span>
+    <span class="n">selected_material</span> <span class="o">=</span> <span class="n">material_data</span><span class="p">[</span><span class="n">selected_material_row_index</span><span class="p">]</span>
+
+    <span class="c1"># The row from area-table to be updated</span>
+    <span class="n">target_row</span> <span class="o">=</span> <span class="n">area_table_data</span><span class="p">[</span><span class="n">active_row_index</span><span class="p">]</span>
+
+    <span class="c1"># Update the values</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;63&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-6&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;125&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-7&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;250&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-8&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;500&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-9&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;1000&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;2000&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-11&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;4000&#39;</span><span class="p">]</span>
+    <span class="n">target_row</span><span class="p">[</span><span class="s1">&#39;col-12&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_material</span><span class="p">[</span><span class="s1">&#39;8000&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Close modal</span>
+    <span class="k">return</span> <span class="n">area_table_data</span><span class="p">,</span> <span class="kc">False</span></div>
 
 
 
@@ -593,7 +634,7 @@
             <span class="p">))</span>
 
         <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
-            <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Reverberation Time Calculation&quot;</span><span class="p">,</span>
+            <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Reverberation Time Calculation with DIN 18041 requirements&quot;</span><span class="p">,</span>
             <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">,</span>
             <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time (s)&quot;</span><span class="p">,</span>
             <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
