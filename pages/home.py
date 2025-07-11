@@ -394,9 +394,10 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
         Input("input_room_humidity", "value"),
         Input("input_room_pressure", "value"),
         Input("dropdown_room_usage", "value"),
+        Input("my-toggle-switch", "value"),
     ]
 )
-def update_graph_with_calculation(table_data, volume, height, temp, humidity, pressure, room_usage):
+def update_graph_with_calculation(table_data, volume, height, temp, humidity, pressure, room_usage, air_damp_activated):
     """
     Update the graph based on all user inputs by calling the calculation module.
 
@@ -416,6 +417,8 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
         Air pressure in hPa.
     room_usage : str
         Selected room usage type.
+    air_damp_activated : bool
+        State of the air dampening toggle switch.
 
     Returns
     -------
@@ -503,7 +506,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             return fig
 
         # Calculate reverberation time
-        reverb_obj = reverberation_calc.reverberation_time(calc_room, surfaces, air_damp_calc=True)
+        reverb_obj = reverberation_calc.reverberation_time(calc_room, surfaces, air_damp_calc=air_damp_activated)
         df_reverb = pd.DataFrame({
             'Frequency': reverb_obj.frequency_bands,
             'Reverberation Time': reverb_obj.reverberation_time
