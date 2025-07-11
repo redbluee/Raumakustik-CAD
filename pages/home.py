@@ -592,7 +592,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                 fill='tonexty', # fill area between trace0 and trace1
                 mode='lines',
                 line_color='rgba(255,107,107,0.5)',
-                name='Tolerance Range - DIN 18041',
+                name='Tolerance Range',
             ))
 
         fig.update_layout(
