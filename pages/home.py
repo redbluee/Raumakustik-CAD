@@ -95,7 +95,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Relative Humidity\u00A0%"),
+                        html.Label(["Relative Humidity","\u00A0", "%"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -105,7 +105,7 @@ layout = dbc.Container(
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
-                        html.Label("Air Pressure\u00A0hPa"),
+                        html.Label(["Air Pressure", "\u00A0", "hPa"]),
                         html.Br(),
                         dcc.Input(
                             type="number",
@@ -237,7 +237,7 @@ layout = dbc.Container(
                         ),
                         html.Button(
                             "Add Row",
-                            id="add-area-row-button",
+                            id="add-row-button",
                             n_clicks=0,
                             className="my-button",
                             style={"marginTop": "10px"},
@@ -277,11 +277,11 @@ layout = dbc.Container(
 # Callback for adding a row
 @callback(
     Output('area-table', 'data', allow_duplicate=True), # allow_duplicate needed if another callback modifies data
-    Input('add-area-row-button', 'n_clicks'),
+    Input('add-row-button', 'n_clicks'),
     State('area-table', 'data'),
     prevent_initial_call=True
 )
-def add_row_to_area_table(n_clicks, rows):
+def add_row_to_surface_table(n_clicks, rows):
     if rows is None:
         rows = []
     new_row_data = {f"col-{i+1}": "💾" if f"col-{i+1}" == "col-3" else "" for i in range(12)}
