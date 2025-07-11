@@ -3,7 +3,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: #f6f6f6 !important;
 }
 
 /* === FULL PAGE ===*/
@@ -13,6 +12,7 @@ body {
     background-image: linear-gradient(109.6deg, rgb(0, 0, 0) 11.2%, rgb(11, 132, 145) 91.1%);
     overflow-x: hidden;
     font-size: 18px;
+    color: #f6f6f6;
 }
 
 /* === dcc.Graphh components ===*/
@@ -178,6 +178,7 @@ input[type="checkbox" i] {
 }
 
 .my-button {
+    color: #f6f6f6;
     padding: 5px 7px 5px 7px;
     font-size: 13px;
     margin: 0px;
@@ -318,4 +319,32 @@ input[type="email"].custom-input:focus {
 #my-toggle-switch + label { /* Adjust selector if label is structured differently by DAQ */
     color: #f6f6f6 !important; /* Ensure label text is light */
     margin-left: 10px; /* Example spacing if label is next to switch */
+}
+
+/* override cell hover background on selected rows */
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover,
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover td.dash-cell.cell--selected {
+    background-color: #0e2a2e !important;
+}
+
+/* === CUSTOM DATA TABLE CELL STYLES === */
+
+/*
+ * This selector targets the input field when a cell is being edited.
+ * It overrides the default Dash style that uses `var(--text-color)`.
+ * No more grey font on dark background.
+*/
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner input:not([type=radio]):not([type=checkbox]) {
+    color: #f6f6f6 !important; /* Ensure text is light during editing */
+}
+
+/*
+ * This selector ensures that when a cell is selected (but not in edit mode),
+ * the text color is also light.
+*/
+#area-table .dash-cell.cell--selected div {
+    color: #f6f6f6 !important;
+}
+.material-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover {
+    cursor: pointer;
 }
