@@ -411,19 +411,30 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
     """
     # Default values for numeric inputs
     volume = float(volume) if volume is not None else 30
-    height = float(height) if height else None
+    height = float(height) if height is not None else None
     temp = float(temp) if temp is not None else 20
     humidity = float(humidity) if humidity is not None else 50
     pressure = float(pressure) if pressure is not None else 1013.25 # hPa
 
-    # Create a default empty figure
+    # Standard octave bands for the x-axis
+    frequency_bands = [63, 125, 250, 500, 1000, 2000, 4000, 8000]
+
+    # Create a default empty figure and pre-format the axes
     fig = go.Figure()
     fig.update_layout(
         title_text="Please provide room volume and surface data for calculation",
         template="plotly_dark",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font_color="#f6f6f6"
+        font_color="#f6f6f6",
+        xaxis=dict(
+            type='log',
+            tickvals=frequency_bands,
+            ticktext=[str(f) for f in frequency_bands],
+            title_text="Frequency in Hz",
+            range=[np.log10(50), np.log10(10000)]  # Set a fixed range for log axis
+        ),
+        yaxis_title="Reverberation Time in s"
     )
 
     if not volume or not table_data:
@@ -528,7 +539,12 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             title_text="Reverberation Time Calculation",
             xaxis_title="Frequency (Hz)",
             yaxis_title="Reverberation Time (s)",
-            xaxis_type='log',
+            xaxis=dict(
+                type='log',
+                tickvals=frequency_bands,
+                ticktext=[str(f) for f in frequency_bands],
+                range=[np.log10(50), np.log10(10000)]  # Also set range here for consistency
+            ),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
 
