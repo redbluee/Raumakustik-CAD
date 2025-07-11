@@ -320,3 +320,7 @@ input[type="email"].custom-input:focus {
     color: #f6f6f6 !important; /* Ensure label text is light */
     margin-left: 10px; /* Example spacing if label is next to switch */
 }
+
+.material-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover {
+    cursor: pointer;
+}
