@@ -162,11 +162,13 @@ layout = dbc.Container(
                             id="reverberation-graph",
                             type="circle",
                             children=dcc.Graph(
-                                id="fig-transformed", className="my-graph"
+                                id="fig-transformed",
+                                className="my-graph",
+                                style={'height': '600px'}
                             ),
                         )
                     ],
-                    width=8,
+                    width=9,
                     className="multi-graph",
                 ),
             ]
