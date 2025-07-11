@@ -15,6 +15,12 @@ if not os.environ.get("SPHINX_BUILD"):
     dash.register_page(__name__, path="/", name="Home", title="Reverbation | Home")
 
 
+# Load material database
+try:
+    df_materials = pd.read_csv("materials.csv")
+except FileNotFoundError:
+    df_materials = pd.DataFrame()
+
 # Define Dropdown Data
 df_room_usage = pd.DataFrame(
     {"options": ["no requirements", "A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"]}
@@ -48,6 +54,7 @@ initial_empty_row["col-delete"] = "🗑️"
 # Page Layout
 layout = dbc.Container(
     [
+        dcc.Store(id='active-row-index-store'),
         dbc.Row(
             [
                 dbc.Col([html.H1("Reverberation Optimization", className="app-brand")]),
@@ -244,6 +251,7 @@ layout = dbc.Container(
             id="details-modal",
             centered=True,
             is_open=False,
+            size="xl",
         ),
     ]
 )
@@ -271,6 +279,7 @@ def add_row_to_area_table(n_clicks, rows):
     Output("details-modal", "is_open"),
     Output("details-modal-body-content", "children"),
     Output('area-table', 'data', allow_duplicate=True), # Keep allow_duplicate if other callbacks modify data
+    Output('active-row-index-store', 'data'),
     Input("area-table", "active_cell"),
     Input("close-details-modal-button", "n_clicks"),
     State("details-modal", "is_open"),
@@ -309,10 +318,11 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
     new_modal_state = modal_is_open
     new_modal_content = dash.no_update
     new_table_data = dash.no_update 
+    stored_row_index = dash.no_update
 
     if triggered_id == "close-details-modal-button":
         new_modal_state = False
-        return new_modal_state, new_modal_content, new_table_data
+        return new_modal_state, new_modal_content, new_table_data, stored_row_index
 
     if active_cell and table_data:
         row_index = active_cell["row"]
@@ -321,53 +331,75 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
         if row_index < len(table_data):
             # Click action on DB icon in the main table
             if col_id == "col-3":
-                selected_row_data = table_data[row_index]
-
-                # Prepare columns for the modal table:
-                # table_columns is defined globally
-                modal_table_display_columns = []
-                for col_def in table_columns:
-                    if col_def['id'] not in ['col-3', 'col-delete']: # Exclude DB and Delete columns
-                        modal_col = col_def.copy()
-                        modal_col['editable'] = False # Make all columns non-editable in the modal
-                        modal_table_display_columns.append(modal_col)
+                stored_row_index = row_index
+                if not df_materials.empty:
+                    modal_table_component = dash_table.DataTable(
+                        id='material-selection-table',
+                        columns=[{"name": i, "id": i} for i in df_materials.columns],
+                        data=df_materials.to_dict('records'),
+                        row_selectable='single',
+                        style_table={'overflowY': 'auto', 'height': '400px', 'overflowX': 'auto', 'minWidth': '100%'},
+                        style_cell={
+                            'textAlign': 'left',
+                            'padding': '5px',
+                            'color': 'black',
+                            'border': '1px solid black'
+                        },
+                        style_header={
+                            'backgroundColor': 'rgb(230, 230, 230)',
+                            'color': 'black',
+                            'fontWeight': 'bold',
+                            'border': '1px solid black'
+                        },
+                    )
+                    new_modal_content = modal_table_component
+                else:
+                    new_modal_content = html.Div("Material database (materials.csv) not found.")
                 
-                # The data for the modal table is the single selected row, wrapped in a list
-                modal_table_display_data = [selected_row_data]
-                
-                # Modal style_data_conditional
-                modal_s_d_c = []
-
-                modal_table_component = dash_table.DataTable(
-                    id='modal-detail-display-table', 
-                    columns=modal_table_display_columns,
-                    data=modal_table_display_data,
-                    style_table={'overflowX': 'auto', 'minWidth': '100%'},
-                    style_cell={ 
-                        'textAlign': 'left',
-                        'padding': '5px',
-                        'color': 'black',
-                        'border': '1px solid black'
-                    },
-                    style_header={
-                        'backgroundColor': 'rgb(230, 230, 230)',
-                        'color': 'black',
-                        'fontWeight': 'bold',
-                        'border': '1px solid black'
-                    },
-                    style_data_conditional=modal_s_d_c,
-                )
-                
-                new_modal_content = modal_table_component
                 new_modal_state = True
             
             elif col_id == "col-delete": # Click on Delete icon in the main table
                 updated_rows = [row for i, row in enumerate(table_data) if i != row_index]
                 new_table_data = updated_rows
                 new_modal_state = False 
-                return new_modal_state, new_modal_content, new_table_data
+                return new_modal_state, new_modal_content, new_table_data, stored_row_index
         
-    return new_modal_state, new_modal_content, new_table_data
+    return new_modal_state, new_modal_content, new_table_data, stored_row_index
+
+
+# Callback to update area-table with selected material
+@callback(
+    Output('area-table', 'data', allow_duplicate=True),
+    Output('details-modal', 'is_open', allow_duplicate=True),
+    Input('material-selection-table', 'selected_rows'),
+    State('material-selection-table', 'data'),
+    State('active-row-index-store', 'data'),
+    State('area-table', 'data'),
+    prevent_initial_call=True
+)
+def update_area_table_with_material(selected_rows, material_data, active_row_index, area_table_data):
+    if not selected_rows or active_row_index is None:
+        return dash.no_update, dash.no_update
+
+    selected_material_row_index = selected_rows[0]
+    selected_material = material_data[selected_material_row_index]
+
+    # The row from area-table to be updated
+    target_row = area_table_data[active_row_index]
+
+    # Update the values
+    target_row['col-4'] = selected_material['name']
+    target_row['col-5'] = selected_material['63']
+    target_row['col-6'] = selected_material['125']
+    target_row['col-7'] = selected_material['250']
+    target_row['col-8'] = selected_material['500']
+    target_row['col-9'] = selected_material['1000']
+    target_row['col-10'] = selected_material['2000']
+    target_row['col-11'] = selected_material['4000']
+    target_row['col-12'] = selected_material['8000']
+
+    # Close modal
+    return area_table_data, False
 
 
 # Connect all inputs to the calculation module and update the graph
