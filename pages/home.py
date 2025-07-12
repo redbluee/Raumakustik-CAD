@@ -605,6 +605,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                 ticktext=[str(f) for f in frequency_bands],
                 range=[np.log10(50), np.log10(10000)]  # Also set range here for consistency
             ),
+            yaxis=dict(range=[0, None]),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
 
