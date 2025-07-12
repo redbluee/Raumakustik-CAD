@@ -1,0 +1,22 @@
+
+on:
+  pull_request:
+  push:
+    branches: [6-feature-we-need-cd-to-deploy-the-newes]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+    #   - name: Test
+    #     run: |
+    #       npm install
+    #       npm run test
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
