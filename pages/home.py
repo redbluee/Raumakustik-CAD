@@ -12,7 +12,12 @@ import reverberation_calc
 
 
 if not os.environ.get("SPHINX_BUILD"):
-    dash.register_page(__name__, path="/", name="Home", title="Reverbation | Home")
+    try:
+        dash.register_page(__name__, path="/", name="Home", title="Reverbation | Home")
+    except dash.exceptions.PageError:
+        # This error is expected when the module is imported during test collection
+        # before the app is instantiated.
+        pass
 
 
 # Load material database
