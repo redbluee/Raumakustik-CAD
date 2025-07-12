@@ -1,3 +1,10 @@
+"""
+Main application file for the Dash app.
+
+This file initializes the Dash application, registers pages, defines the overall layout,
+and runs the server.
+"""
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, html

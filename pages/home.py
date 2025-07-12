@@ -1,3 +1,8 @@
+"""
+This module defines the layout and callbacks for the home page of the reverberation
+optimization application. It includes components for inputting room parameters,
+defining room surfaces, and visualizing the calculated reverberation time.
+"""
 import dash
 from dash import html, dcc, callback, Input, Output, State, dash_table
 import dash_daq as daq
@@ -288,6 +293,23 @@ layout = dbc.Container(
     prevent_initial_call=True
 )
 def add_row_to_surface_table(n_clicks, rows):
+    """Add a new row to the surface definition table.
+
+    This callback is triggered when the "Add Row" button is clicked. It appends a new,
+    empty row to the `area-table` DataTable, allowing users to define another room surface.
+
+    Parameters
+    ----------
+    n_clicks : int
+        The number of times the 'add-row-button' has been clicked.
+    rows : list
+        The existing data in the 'area-table'.
+
+    Returns
+    -------
+    list
+        The updated data for the 'area-table' with the new row added.
+    """
     if rows is None:
         rows = []
     new_row_data = {f"col-{i+1}": "💾" if f"col-{i+1}" == "col-3" else "" for i in range(12)}
@@ -308,8 +330,11 @@ def add_row_to_surface_table(n_clicks, rows):
     prevent_initial_call=True
 )
 def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_data):
-    """
-    Handle interactions with the main table, including opening the modal and deleting rows.
+    """Handle interactions with the main table.
+
+    This callback manages two user interactions:
+    1. Opens a material selection modal when the database icon ('💾') is clicked.
+    2. Deletes a row from the table when the delete icon ('🗑️') is clicked.
 
     Parameters
     ----------
@@ -324,12 +349,9 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
 
     Returns
     -------
-    new_modal_state : bool
-        Updated state of the modal.
-    new_modal_content : dash_html_components.Component
-        Content to display in the modal.
-    new_table_data : list
-        Updated data for the table after deletion.
+    tuple
+        A tuple containing the updated modal state, new modal content,
+        updated table data, and the stored active row index.
     """
     
     
@@ -357,7 +379,7 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
                     modal_table_component = dash_table.DataTable(
                         id='material-selection-table',
                         columns=[{"name": i, "id": i} for i in df_materials.columns],
-                        data=df_materials.to_dict('records'),
+                        data=df_materials.to_dict('records'), # type: ignore
                         style_table={'overflowY': 'auto', 'height': '400px', 'overflowX': 'auto', 'minWidth': '100%'},
                         style_cell={
                             'textAlign': 'left',
@@ -403,6 +425,28 @@ def handle_table_interactions(active_cell, close_clicks, modal_is_open, table_da
     prevent_initial_call=True
 )
 def update_area_table_with_material(active_cell, material_data, active_row_index, area_table_data):
+    """Update the area table with data from the selected material of the material database.
+
+    This callback is triggered when a cell in the material selection modal table is clicked.
+    It takes the absorption coefficient data from the selected material and populates the
+    corresponding row in the main 'area-table'.
+
+    Parameters
+    ----------
+    active_cell : dict
+        The activated cell in the 'material-selection-table'.
+    material_data : list
+        The data from the 'material-selection-table'.
+    active_row_index : int
+        The index of the row in 'area-table' to be updated.
+    area_table_data : list
+        The current data in the 'area-table'.
+
+    Returns
+    -------
+    tuple
+        A tuple containing the updated 'area-table' data and a boolean to close the modal.
+    """
     if not active_cell or active_row_index is None:
         return dash.no_update, dash.no_update
 
@@ -442,12 +486,16 @@ def update_area_table_with_material(active_cell, material_data, active_row_index
     ]
 )
 def update_graph_with_calculation(table_data, volume, height, temp, humidity, pressure, room_usage, air_damp_activated):
-    """
-    Update the graph based on all user inputs by calling the calculation module.
+    """Update the graph based on all user inputs by calling the calculation module.
+
+    This callback gathers all room parameters and surface definitions from the user interface,
+    passes them to the `reverberation_calc` module for calculation, and plots the resulting
+    reverberation time on the graph. It also plots target reverberation time ranges based on
+    DIN 18041 if a room usage type is selected.
 
     Parameters
     ----------
-    table_data : list of dicts
+    table_data : list[dict]
         Data from the surface definition table.
     volume : float
         Room volume in cubic meters.
@@ -460,14 +508,14 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
     pressure : float
         Air pressure in hPa.
     room_usage : str
-        Selected room usage type.
+        Selected room usage type from the dropdown.
     air_damp_activated : bool
         State of the air dampening toggle switch.
 
     Returns
     -------
-    fig : plotly.graph_objects.Figure
-        Updated figure with calculated reverberation time.
+    plotly.graph_objects.Figure
+        An updated Plotly figure with the calculated reverberation time.
     """
     # Default values for numeric inputs
     volume = float(volume) if volume is not None else 30
