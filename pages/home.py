@@ -566,6 +566,29 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             })
         else:
             df_target = pd.DataFrame()
+            
+        if not df_target.empty and (df_target['T_max'] > 0).any():
+            # Find the first and last indices where T_max is greater than 0
+            non_zero_indices = df_target.index[df_target['T_max'] > 0]
+            first_index = non_zero_indices[0]
+            last_index = non_zero_indices[-1]
+
+            # Get the corresponding frequencies
+            first_freq = df_target.loc[first_index, 'Frequency']
+            last_freq = df_target.loc[last_index, 'Frequency']
+
+            # Create new rows to form a rectangle
+            start_rect_row = pd.DataFrame([{'Frequency': first_freq, 'T_max': 0, 'T_min': 0}])
+            end_rect_row = pd.DataFrame([{'Frequency': last_freq, 'T_max': 0, 'T_min': 0}])
+
+            # Insert the new rows into the DataFrame
+            df_target = pd.concat([
+                df_target.iloc[:first_index],
+                start_rect_row,
+                df_target.iloc[first_index:last_index + 1],
+                end_rect_row,
+                df_target.iloc[last_index + 1:]
+            ]).reset_index(drop=True)
 
 
         # Plotting
