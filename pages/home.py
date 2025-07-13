@@ -89,7 +89,7 @@ layout = dbc.Container(
                         html.Br(),
                         dcc.Input(
                             type="number",
-                            placeholder="3",
+                            # placeholder="3",
                             id="input_room_height",
                             min=0,
                             className="custom-input",  # Use custom style class
