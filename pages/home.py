@@ -4,7 +4,7 @@ optimization application. It includes components for inputting room parameters,
 defining room surfaces, and visualizing the calculated reverberation time.
 """
 import dash
-from dash import html, dcc, callback, Input, Output, State, dash_table
+from dash import html, dcc, callback, Input, Output, State, dash_table, clientside_callback
 import dash_daq as daq
 import dash_bootstrap_components as dbc
 
@@ -256,11 +256,10 @@ layout = dbc.Container(
                             id="export",
                             n_clicks=0,
                             title="The grid search may take several minutes",
-                            className="my-button",
+                            className="my-button no-print",
                         ),
-                    ],
-                    width=8,
-                    style={"text-align": "left", "margin": "5px 1px 1px 1px"},
+                        html.Div(id="placeholder"),
+                    ]
                 ),
             ]
         ),
@@ -699,3 +698,19 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
         fig.update_layout(title_text=f"An error occurred: {e}")
 
     return fig
+
+
+# Clientside callback to trigger browser print
+clientside_callback(
+    """
+    function(n_clicks) {
+        if (n_clicks > 0) {
+            window.print();
+        }
+        return '';
+    }
+    """,
+    Output('placeholder', 'children'),
+    Input('export', 'n_clicks'),
+    prevent_initial_call=True
+)

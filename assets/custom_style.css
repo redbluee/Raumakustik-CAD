@@ -348,3 +348,32 @@ input[type="email"].custom-input:focus {
 .material-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover {
     cursor: pointer;
 }
+
+/* Print styles */
+@media print {
+  .container {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  body {
+    -webkit-transform: scale(0.65); /* Safari and Chrome */
+    -moz-transform: scale(0.65);    /* Firefox */
+    -ms-transform: scale(0.65);     /* IE 9 */
+    -o-transform: scale(0.65);      /* Opera */
+    transform: scale(0.65);
+    -webkit-transform-origin: top left;
+    -moz-transform-origin: top left;
+    -ms-transform-origin: top left;
+    -o-transform-origin: top left;
+    transform-origin: top left;
+    width: 154%; /* 100 / 0.65 */
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .no-print {
+    display: none;
+  }
+}

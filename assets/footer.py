@@ -16,4 +16,4 @@ _footer = html.Div([
             ], width = 2)
         ])
     ], fluid=True)
-], className = 'footer')
+], className = 'footer no-print')
