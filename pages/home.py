@@ -772,7 +772,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
         else:
             df_target = pd.DataFrame()
             
-        if not df_target.empty and (df_target['T_max'] > 0).any():
+        if not df_target.empty and (df_target['T_max'] > 0).any() and room_usage.startswith('B'):
             # Find the first and last indices where T_max is greater than 0
             non_zero_indices = df_target.index[df_target['T_max'] > 0]
             first_index = non_zero_indices[0]
@@ -801,7 +801,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             x=df_reverb['Frequency'], 
             y=df_reverb['Reverberation Time'],
             mode='lines+markers',
-            name='Reverberation Time (T)',
+            name='Reverberation Time',
             line=dict(color='#3DED97', width=3)
         ))
         
