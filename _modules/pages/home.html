@@ -100,7 +100,7 @@
         <span class="n">dcc</span><span class="o">.</span><span class="n">Store</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;active-row-index-store&#39;</span><span class="p">),</span>
         <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">([</span><span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span><span class="s2">&quot;Reverberation Optimization&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;app-brand&quot;</span><span class="p">)]),</span>
+                <span class="n">dbc</span><span class="o">.</span><span class="n">Col</span><span class="p">([</span><span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span><span class="s2">&quot;RoomAcousticWizard&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;app-brand&quot;</span><span class="p">)]),</span>
             <span class="p">]</span>
         <span class="p">),</span>
         <span class="n">dbc</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span>
@@ -205,11 +205,13 @@
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;reverberation-graph&quot;</span><span class="p">,</span>
                             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">,</span>
                             <span class="n">children</span><span class="o">=</span><span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span>
-                                <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fig-transformed&quot;</span><span class="p">,</span> <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-graph&quot;</span>
+                                <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fig-transformed&quot;</span><span class="p">,</span>
+                                <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-graph&quot;</span><span class="p">,</span>
+                                <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;600px&#39;</span><span class="p">}</span>
                             <span class="p">),</span>
                         <span class="p">)</span>
                     <span class="p">],</span>
-                    <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
                     <span class="n">className</span><span class="o">=</span><span class="s2">&quot;multi-graph&quot;</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">]</span>
