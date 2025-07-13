@@ -637,7 +637,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                 fill=None,
                 mode='lines',
                 line_color='rgba(255,107,107,0.5)',
-                name='Target Range (Upper)'
+                showlegend=False
             ))
             fig.add_trace(go.Scatter(
                 x=df_target['Frequency'],
@@ -645,7 +645,7 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                 fill='tonexty', # fill area between trace0 and trace1
                 mode='lines',
                 line_color='rgba(255,107,107,0.5)',
-                name='Target Range (Lower)'
+                name='Tolerance Range',
             ))
 
         fig.update_layout(
@@ -658,7 +658,15 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
                 ticktext=[str(f) for f in frequency_bands],
                 range=[np.log10(50), np.log10(10000)]  # Also set range here for consistency
             ),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            legend=dict(
+                orientation="h", 
+                yanchor="bottom", 
+                y=1.02, 
+                xanchor="right", 
+                x=1,
+                itemclick=False,
+                itemdoubleclick=False
+                )
         )
 
     except Exception as e:
