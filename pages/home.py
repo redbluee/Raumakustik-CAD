@@ -67,7 +67,7 @@ layout = dbc.Container(
         dcc.Store(id='active-row-index-store'),
         dbc.Row(
             [
-                dbc.Col([html.H1("Reverberation Optimization", className="app-brand")]),
+                dbc.Col([html.H1("RoomAcousticWizard", className="app-brand")]),
             ]
         ),
         dbc.Row(
@@ -172,11 +172,13 @@ layout = dbc.Container(
                             id="reverberation-graph",
                             type="circle",
                             children=dcc.Graph(
-                                id="fig-transformed", className="my-graph"
+                                id="fig-transformed",
+                                className="my-graph",
+                                style={'height': '600px'}
                             ),
                         )
                     ],
-                    width=8,
+                    width=9,
                     className="multi-graph",
                 ),
             ]
