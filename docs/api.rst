@@ -1,4 +1,4 @@
-calculation backend
+Calculation backend
 =============
 
 
@@ -6,6 +6,11 @@ This module provides the core functionality for calculating reverberation times 
 
 
 .. automodule:: reverberation_calc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: material_database
    :members:
    :undoc-members:
    :show-inheritance:

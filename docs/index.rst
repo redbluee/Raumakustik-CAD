@@ -7,12 +7,14 @@ RoomAcousticWizard documentation
 =====================================
 
 
-This documentation provides an overview of the internal code from RoomAcousticWizard, a tool designed to calculate and optimize reverberation times in rooms according to the DIN 18041. It includes both an API for programmatic access and a graphical user interface (GUI) for interactive use.
-
+This documentation provides an overview over the functionalities from RoomAcousticWizard, a tool designed to calculate and optimize reverberation times in rooms according to the DIN 18041 [DIN18041]_. 
+Included are instructions on how to use the tool, both through a graphical user interface (GUI) and programmatically.
+The internal program logic is also documented, providing insights into the GUI, the calculation methods and algorithms used.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents:
 
+   user_guide
    gui
    api
