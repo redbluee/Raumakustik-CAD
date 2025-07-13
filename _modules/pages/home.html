@@ -593,7 +593,8 @@
             <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Frequency in Hz&quot;</span><span class="p">,</span>
             <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">10000</span><span class="p">)]</span>  <span class="c1"># Set a fixed range for log axis</span>
         <span class="p">),</span>
-        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time in s&quot;</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time in s&quot;</span><span class="p">,</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">volume</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">table_data</span><span class="p">:</span>
