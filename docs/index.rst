@@ -12,7 +12,7 @@ Included are instructions on how to use the tool, both through a graphical user 
 The internal program logic is also documented, providing insights into the GUI, the calculation methods and algorithms used.
 
 .. toctree::
-   :maxdepth: 
+   :maxdepth: 2
    :caption: Contents:
 
    user_guide

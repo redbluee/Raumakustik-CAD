@@ -9,3 +9,8 @@ This module provides the core functionality for calculating reverberation times 
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. automodule:: material_database
+   :members:
+   :undoc-members:
+   :show-inheritance:
