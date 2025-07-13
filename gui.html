@@ -35,15 +35,38 @@
             
   <section id="graphical-user-interface">
 <h1>graphical user interface<a class="headerlink" href="#graphical-user-interface" title="Link to this heading">¶</a></h1>
-<dl class="py function" id="module-pages.home">
+<p id="module-pages.home">This module defines the layout and callbacks for the home page of the reverberation
+optimization application. It includes components for inputting room parameters,
+defining room surfaces, and visualizing the calculated reverberation time.</p>
+<dl class="py function">
 <dt class="sig sig-object py" id="pages.home.add_row_to_surface_table">
 <span class="sig-prename descclassname"><span class="pre">pages.home.</span></span><span class="sig-name descname"><span class="pre">add_row_to_surface_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_clicks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/home.html#add_row_to_surface_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pages.home.add_row_to_surface_table" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add a new row to the surface definition table.</p>
+<p>This callback is triggered when the “Add Row” button is clicked. It appends a new,
+empty row to the <cite>area-table</cite> DataTable, allowing users to define another room surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_clicks</strong> (<em>int</em>) – The number of times the ‘add-row-button’ has been clicked.</p></li>
+<li><p><strong>rows</strong> (<em>list</em>) – The existing data in the ‘area-table’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated data for the ‘area-table’ with the new row added.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pages.home.handle_table_interactions">
 <span class="sig-prename descclassname"><span class="pre">pages.home.</span></span><span class="sig-name descname"><span class="pre">handle_table_interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_clicks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modal_is_open</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/home.html#handle_table_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pages.home.handle_table_interactions" title="Link to this definition">¶</a></dt>
-<dd><p>Handle interactions with the main table, including opening the modal and deleting rows.</p>
+<dd><p>Handle interactions with the main table.</p>
+<p>This callback manages two user interactions:
+1. Opens a material selection modal when the database icon (’💾’) is clicked.
+2. Deletes a row from the table when the delete icon (’🗑️’) is clicked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -54,12 +77,11 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>new_modal_state</strong> (<em>bool</em>) – Updated state of the modal.</p></li>
-<li><p><strong>new_modal_content</strong> (<em>dash_html_components.Component</em>) – Content to display in the modal.</p></li>
-<li><p><strong>new_table_data</strong> (<em>list</em>) – Updated data for the table after deletion.</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>A tuple containing the updated modal state, new modal content,
+updated table data, and the stored active row index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -67,27 +89,51 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pages.home.update_area_table_with_material">
 <span class="sig-prename descclassname"><span class="pre">pages.home.</span></span><span class="sig-name descname"><span class="pre">update_area_table_with_material</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">material_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_row_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area_table_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/home.html#update_area_table_with_material"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pages.home.update_area_table_with_material" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Update the area table with data from the selected material of the material database.</p>
+<p>This callback is triggered when a cell in the material selection modal table is clicked.
+It takes the absorption coefficient data from the selected material and populates the
+corresponding row in the main ‘area-table’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>active_cell</strong> (<em>dict</em>) – The activated cell in the ‘material-selection-table’.</p></li>
+<li><p><strong>material_data</strong> (<em>list</em>) – The data from the ‘material-selection-table’.</p></li>
+<li><p><strong>active_row_index</strong> (<em>int</em>) – The index of the row in ‘area-table’ to be updated.</p></li>
+<li><p><strong>area_table_data</strong> (<em>list</em>) – The current data in the ‘area-table’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the updated ‘area-table’ data and a boolean to close the modal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pages.home.update_graph_with_calculation">
 <span class="sig-prename descclassname"><span class="pre">pages.home.</span></span><span class="sig-name descname"><span class="pre">update_graph_with_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">humidity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">room_usage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">air_damp_activated</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/home.html#update_graph_with_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pages.home.update_graph_with_calculation" title="Link to this definition">¶</a></dt>
 <dd><p>Update the graph based on all user inputs by calling the calculation module.</p>
+<p>This callback gathers all room parameters and surface definitions from the user interface,
+passes them to the <cite>reverberation_calc</cite> module for calculation, and plots the resulting
+reverberation time on the graph. It also plots target reverberation time ranges based on
+DIN 18041 if a room usage type is selected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>table_data</strong> (<em>list</em><em> of </em><em>dicts</em>) – Data from the surface definition table.</p></li>
+<li><p><strong>table_data</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – Data from the surface definition table.</p></li>
 <li><p><strong>volume</strong> (<em>float</em>) – Room volume in cubic meters.</p></li>
 <li><p><strong>height</strong> (<em>float</em><em>, </em><em>optional</em>) – Room height in meters.</p></li>
 <li><p><strong>temp</strong> (<em>float</em>) – Room temperature in degrees Celsius.</p></li>
 <li><p><strong>humidity</strong> (<em>float</em>) – Relative humidity in percent.</p></li>
 <li><p><strong>pressure</strong> (<em>float</em>) – Air pressure in hPa.</p></li>
-<li><p><strong>room_usage</strong> (<em>str</em>) – Selected room usage type.</p></li>
+<li><p><strong>room_usage</strong> (<em>str</em>) – Selected room usage type from the dropdown.</p></li>
 <li><p><strong>air_damp_activated</strong> (<em>bool</em>) – State of the air dampening toggle switch.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>fig</strong> – Updated figure with calculated reverberation time.</p>
+<dd class="field-even"><p>An updated Plotly figure with the calculated reverberation time.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>plotly.graph_objects.Figure</p>

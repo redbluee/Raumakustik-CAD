@@ -31,7 +31,12 @@
           <div class="body" role="main">
             
   <h1>Source code for pages.home</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">dash</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines the layout and callbacks for the home page of the reverberation</span>
+<span class="sd">optimization application. It includes components for inputting room parameters,</span>
+<span class="sd">defining room surfaces, and visualizing the calculated reverberation time.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dash</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dash</span><span class="w"> </span><span class="kn">import</span> <span class="n">html</span><span class="p">,</span> <span class="n">dcc</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">dash_table</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash_daq</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">daq</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash_bootstrap_components</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dbc</span>
@@ -328,6 +333,23 @@
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_row_to_surface_table</span><span class="p">(</span><span class="n">n_clicks</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a new row to the surface definition table.</span>
+
+<span class="sd">    This callback is triggered when the &quot;Add Row&quot; button is clicked. It appends a new,</span>
+<span class="sd">    empty row to the `area-table` DataTable, allowing users to define another room surface.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_clicks : int</span>
+<span class="sd">        The number of times the &#39;add-row-button&#39; has been clicked.</span>
+<span class="sd">    rows : list</span>
+<span class="sd">        The existing data in the &#39;area-table&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        The updated data for the &#39;area-table&#39; with the new row added.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">new_row_data</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;col-</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;col-3&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)}</span>
@@ -351,8 +373,11 @@
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">handle_table_interactions</span><span class="p">(</span><span class="n">active_cell</span><span class="p">,</span> <span class="n">close_clicks</span><span class="p">,</span> <span class="n">modal_is_open</span><span class="p">,</span> <span class="n">table_data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Handle interactions with the main table, including opening the modal and deleting rows.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle interactions with the main table.</span>
+
+<span class="sd">    This callback manages two user interactions:</span>
+<span class="sd">    1. Opens a material selection modal when the database icon (&#39;💾&#39;) is clicked.</span>
+<span class="sd">    2. Deletes a row from the table when the delete icon (&#39;🗑️&#39;) is clicked.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -367,12 +392,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    new_modal_state : bool</span>
-<span class="sd">        Updated state of the modal.</span>
-<span class="sd">    new_modal_content : dash_html_components.Component</span>
-<span class="sd">        Content to display in the modal.</span>
-<span class="sd">    new_table_data : list</span>
-<span class="sd">        Updated data for the table after deletion.</span>
+<span class="sd">    tuple</span>
+<span class="sd">        A tuple containing the updated modal state, new modal content,</span>
+<span class="sd">        updated table data, and the stored active row index.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     
@@ -400,7 +422,7 @@
                     <span class="n">modal_table_component</span> <span class="o">=</span> <span class="n">dash_table</span><span class="o">.</span><span class="n">DataTable</span><span class="p">(</span>
                         <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;material-selection-table&#39;</span><span class="p">,</span>
                         <span class="n">columns</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df_materials</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
-                        <span class="n">data</span><span class="o">=</span><span class="n">df_materials</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">),</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">df_materials</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">),</span> <span class="c1"># type: ignore</span>
                         <span class="n">style_table</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;overflowY&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;400px&#39;</span><span class="p">,</span> <span class="s1">&#39;overflowX&#39;</span><span class="p">:</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;minWidth&#39;</span><span class="p">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">},</span>
                         <span class="n">style_cell</span><span class="o">=</span><span class="p">{</span>
                             <span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
@@ -449,6 +471,28 @@
     <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">update_area_table_with_material</span><span class="p">(</span><span class="n">active_cell</span><span class="p">,</span> <span class="n">material_data</span><span class="p">,</span> <span class="n">active_row_index</span><span class="p">,</span> <span class="n">area_table_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the area table with data from the selected material of the material database.</span>
+
+<span class="sd">    This callback is triggered when a cell in the material selection modal table is clicked.</span>
+<span class="sd">    It takes the absorption coefficient data from the selected material and populates the</span>
+<span class="sd">    corresponding row in the main &#39;area-table&#39;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    active_cell : dict</span>
+<span class="sd">        The activated cell in the &#39;material-selection-table&#39;.</span>
+<span class="sd">    material_data : list</span>
+<span class="sd">        The data from the &#39;material-selection-table&#39;.</span>
+<span class="sd">    active_row_index : int</span>
+<span class="sd">        The index of the row in &#39;area-table&#39; to be updated.</span>
+<span class="sd">    area_table_data : list</span>
+<span class="sd">        The current data in the &#39;area-table&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        A tuple containing the updated &#39;area-table&#39; data and a boolean to close the modal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">active_cell</span> <span class="ow">or</span> <span class="n">active_row_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span><span class="p">,</span> <span class="n">dash</span><span class="o">.</span><span class="n">no_update</span>
 
@@ -491,12 +535,16 @@
     <span class="p">]</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">update_graph_with_calculation</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">humidity</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">room_usage</span><span class="p">,</span> <span class="n">air_damp_activated</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Update the graph based on all user inputs by calling the calculation module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the graph based on all user inputs by calling the calculation module.</span>
+
+<span class="sd">    This callback gathers all room parameters and surface definitions from the user interface,</span>
+<span class="sd">    passes them to the `reverberation_calc` module for calculation, and plots the resulting</span>
+<span class="sd">    reverberation time on the graph. It also plots target reverberation time ranges based on</span>
+<span class="sd">    DIN 18041 if a room usage type is selected.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    table_data : list of dicts</span>
+<span class="sd">    table_data : list[dict]</span>
 <span class="sd">        Data from the surface definition table.</span>
 <span class="sd">    volume : float</span>
 <span class="sd">        Room volume in cubic meters.</span>
@@ -509,14 +557,14 @@
 <span class="sd">    pressure : float</span>
 <span class="sd">        Air pressure in hPa.</span>
 <span class="sd">    room_usage : str</span>
-<span class="sd">        Selected room usage type.</span>
+<span class="sd">        Selected room usage type from the dropdown.</span>
 <span class="sd">    air_damp_activated : bool</span>
 <span class="sd">        State of the air dampening toggle switch.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    fig : plotly.graph_objects.Figure</span>
-<span class="sd">        Updated figure with calculated reverberation time.</span>
+<span class="sd">    plotly.graph_objects.Figure</span>
+<span class="sd">        An updated Plotly figure with the calculated reverberation time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default values for numeric inputs</span>
     <span class="n">volume</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">30</span>
