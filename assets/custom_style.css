@@ -149,6 +149,20 @@ input[type="checkbox" i] {
     background-color: #042f33;
 }
 
+/* === PRINT STYLES === */
+@media print {
+    /* Force printing of background colors and images */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Hide elements that shouldn't be printed */
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
 .rc-slider-handle:hover {
     border-color: #f6f6f6;
 }

@@ -261,7 +261,8 @@ layout = dbc.Container(
                         html.Div(id="placeholder"),
                     ]
                 ),
-            ]
+            ],
+            className="no-print",
         ),
         dbc.Modal(
             [
