@@ -78,50 +78,45 @@ layout = dbc.Container(
                         html.Label(["Room Volume", "\u00A0", "m", html.Sup("3")]),
                         html.Br(),
                         dcc.Input(
-                            type="number",
+                            type="text",
                             placeholder="30",
                             id="input_room_volume",
-                            min=0,
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
                         html.Label(["Room Height", "\u00A0", "m"]),
                         html.Br(),
                         dcc.Input(
-                            type="number",
+                            type="text",
                             # placeholder="3",
                             id="input_room_height",
-                            min=0,
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
                         html.Label(["Temperature", "\u00A0", "°C"]),
                         html.Br(),
                         dcc.Input(
-                            type="number",
+                            type="text",
                             placeholder="20",
                             id="input_room_temperature",
-                            min=0,
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
                         html.Label(["Relative Humidity","\u00A0", "%"]),
                         html.Br(),
                         dcc.Input(
-                            type="number",
+                            type="text",
                             placeholder="50",
                             id="input_room_humidity",
-                            min=0,
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
                         html.Label(["Air Pressure", "\u00A0", "hPa"]),
                         html.Br(),
                         dcc.Input(
-                            type="number",
+                            type="text",
                             placeholder="1013.5",
                             id="input_room_pressure",
-                            min=0,
                             className="custom-input",  # Use custom style class
                         ),
                         html.Br(),
@@ -478,6 +473,147 @@ def update_area_table_with_material(active_cell, material_data, active_row_index
     return area_table_data, False
 
 
+@callback(
+    Output('input_room_volume', 'value'),
+    Input('input_room_volume', 'n_blur'),
+    State('input_room_volume', 'value')
+)
+def round_room_volume(n_blur, value):
+    if value is None or value == '':
+        return None
+    try:
+        # Replace comma with dot and convert to float
+        num_value = float(str(value).replace(',', '.'))
+        return round(num_value, 2)
+    except (ValueError, TypeError):
+        return None
+
+@callback(
+    Output('input_room_height', 'value'),
+    Input('input_room_height', 'n_blur'),
+    State('input_room_height', 'value')
+)
+def round_room_height(n_blur, value):
+    if value is None or value == '':
+        return None
+    try:
+        num_value = float(str(value).replace(',', '.'))
+        return round(num_value, 2)
+    except (ValueError, TypeError):
+        return None
+
+@callback(
+    Output('input_room_temperature', 'value'),
+    Input('input_room_temperature', 'n_blur'),
+    State('input_room_temperature', 'value')
+)
+def round_room_temperature(n_blur, value):
+    if value is None or value == '':
+        return None
+    try:
+        num_value = float(str(value).replace(',', '.'))
+        return round(num_value, 2)
+    except (ValueError, TypeError):
+        return None
+
+@callback(
+    Output('input_room_humidity', 'value'),
+    Input('input_room_humidity', 'n_blur'),
+    State('input_room_humidity', 'value')
+)
+def round_room_humidity(n_blur, value):
+    if value is None or value == '':
+        return None
+    try:
+        num_value = float(str(value).replace(',', '.'))
+        return round(num_value, 2)
+    except (ValueError, TypeError):
+        return None
+
+@callback(
+    Output('input_room_pressure', 'value'),
+    Input('input_room_pressure', 'n_blur'),
+    State('input_room_pressure', 'value')
+)
+def round_room_pressure(n_blur, value):
+    if value is None or value == '':
+        return None
+    try:
+        num_value = float(str(value).replace(',', '.'))
+        return round(num_value, 2)
+    except (ValueError, TypeError):
+        return None
+
+
+@callback(
+    Output('area-table', 'data', allow_duplicate=True),
+    Input('area-table', 'data_timestamp'),
+    State('area-table', 'data'),
+    State('area-table', 'data_previous'),
+    prevent_initial_call=True
+)
+def validate_and_format_table_data(timestamp, data, data_previous):
+    """
+    Validate and format the data in the area-table.
+    Ensures that area and alpha values are numeric and rounded to two decimal places.
+    Reverts invalid inputs to their previous state.
+    """
+    if data is None or data_previous is None:
+        raise dash.exceptions.PreventUpdate
+
+    # If a row was added or deleted, the lengths will be different.
+    # In this case, we don't want to validate, so we allow the update to proceed
+    # without modification from this callback.
+    if len(data) != len(data_previous):
+        return data
+
+    # Find the changed cell
+    changed_row_idx, changed_col_id = -1, ''
+    for i in range(len(data)):
+        # Using .get() to avoid KeyErrors if a column was somehow removed
+        diff_keys = [key for key in data[i] if data[i].get(key) != data_previous[i].get(key)]
+        if diff_keys:
+            changed_row_idx = i
+            changed_col_id = diff_keys[0]
+            break
+
+    if changed_row_idx == -1:
+        raise dash.exceptions.PreventUpdate
+
+    # List of columns to validate
+    editable_numeric_cols = [f'col-{i}' for i in range(2, 13) if i not in [3, 4]]
+
+    if changed_col_id in editable_numeric_cols:
+        value = data[changed_row_idx][changed_col_id]
+        prev_value = data_previous[changed_row_idx][changed_col_id]
+
+        if isinstance(value, str):
+            cleaned_value = value.replace(',', '.').strip()
+            if cleaned_value == '':
+                # Allow user to clear the cell
+                return data
+
+            # Check for valid float format
+            if cleaned_value.count('.') <= 1 and (cleaned_value.replace('.', '', 1).isdigit() or (cleaned_value.startswith('-') and cleaned_value[1:].replace('.', '', 1).isdigit())):
+                try:
+                    num_value = float(cleaned_value)
+                    data[changed_row_idx][changed_col_id] = round(num_value, 2)
+                except (ValueError, TypeError):
+                    # Revert if conversion fails
+                    data[changed_row_idx][changed_col_id] = prev_value
+            else:
+                # Revert if format is invalid
+                data[changed_row_idx][changed_col_id] = prev_value
+        elif isinstance(value, (int, float)):
+            data[changed_row_idx][changed_col_id] = round(value, 2)
+        # If value is None or other type, and it's a change, revert it.
+        elif value != prev_value:
+             data[changed_row_idx][changed_col_id] = prev_value
+
+
+    return data
+
+
 # Connect all inputs to the calculation module and update the graph
 @callback(
     Output('fig-transformed', 'figure'),
@@ -524,12 +660,21 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
     plotly.graph_objects.Figure
         An updated Plotly figure with the calculated reverberation time.
     """
+    # Helper to convert input to float, handling commas.
+    def to_float(value, default):
+        if value is None or value == '':
+            return default
+        try:
+            return float(str(value).replace(',', '.'))
+        except (ValueError, TypeError):
+            return default
+
     # Default values for numeric inputs
-    volume = float(volume) if volume is not None else 30
-    height = float(height) if height is not None else None
-    temp = float(temp) if temp is not None else 20
-    humidity = float(humidity) if humidity is not None else 50
-    pressure = float(pressure) if pressure is not None else 1013.25 # hPa
+    volume = to_float(volume, 30)
+    height = to_float(height, None)
+    temp = to_float(temp, 20)
+    humidity = to_float(humidity, 50)
+    pressure = to_float(pressure, 1013.25) # hPa
 
     # Standard octave bands for the x-axis
     frequency_bands = [63, 125, 250, 500, 1000, 2000, 4000, 8000]
@@ -571,16 +716,20 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             try:
                 # Use a helper to safely convert values to float, defaulting to np.nan for empty strings
                 def safe_float(val):
+                    # The validation callback should have already formatted the numbers,
+                    # but this is a safeguard.
+                    if isinstance(val, str):
+                        val = val.replace(',', '.').strip()
                     try:
                         # Return NaN if the value is an empty string or cannot be converted
-                        if val == '':
+                        if val == '' or val is None:
                             return np.nan
                         return float(val)
                     except (ValueError, TypeError):
                         return np.nan
 
                 area = safe_float(row.get('col-2'))
-                if area > 0 and not np.isnan(area):
+                if area is not None and area > 0 and not np.isnan(area):
                     absorb_coeffs = [
                         safe_float(row.get('col-5')),
                         safe_float(row.get('col-6')),
