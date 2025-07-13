@@ -665,6 +665,29 @@
             <span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">df_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">df_target</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="c1"># Find the first and last indices where T_max is greater than 0</span>
+            <span class="n">non_zero_indices</span> <span class="o">=</span> <span class="n">df_target</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">first_index</span> <span class="o">=</span> <span class="n">non_zero_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">last_index</span> <span class="o">=</span> <span class="n">non_zero_indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Get the corresponding frequencies</span>
+            <span class="n">first_freq</span> <span class="o">=</span> <span class="n">df_target</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">first_index</span><span class="p">,</span> <span class="s1">&#39;Frequency&#39;</span><span class="p">]</span>
+            <span class="n">last_freq</span> <span class="o">=</span> <span class="n">df_target</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">last_index</span><span class="p">,</span> <span class="s1">&#39;Frequency&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Create new rows to form a rectangle</span>
+            <span class="n">start_rect_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="n">first_freq</span><span class="p">,</span> <span class="s1">&#39;T_max&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;T_min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}])</span>
+            <span class="n">end_rect_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="n">last_freq</span><span class="p">,</span> <span class="s1">&#39;T_max&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;T_min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}])</span>
+
+            <span class="c1"># Insert the new rows into the DataFrame</span>
+            <span class="n">df_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span>
+                <span class="n">df_target</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">first_index</span><span class="p">],</span>
+                <span class="n">start_rect_row</span><span class="p">,</span>
+                <span class="n">df_target</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">first_index</span><span class="p">:</span><span class="n">last_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">end_rect_row</span><span class="p">,</span>
+                <span class="n">df_target</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">last_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+            <span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
         <span class="c1"># Plotting</span>
