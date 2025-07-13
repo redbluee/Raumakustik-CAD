@@ -549,7 +549,8 @@ def update_graph_with_calculation(table_data, volume, height, temp, humidity, pr
             title_text="Frequency in Hz",
             range=[np.log10(50), np.log10(10000)]  # Set a fixed range for log axis
         ),
-        yaxis_title="Reverberation Time in s"
+        yaxis_title="Reverberation Time in s",
+        yaxis=dict(range=[0, 4]),
     )
 
     if not volume or not table_data:
