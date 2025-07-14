@@ -13,7 +13,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import os
-import reverberation_calc
+from src import reverberation_calc
 
 
 if not os.environ.get("SPHINX_BUILD"):
