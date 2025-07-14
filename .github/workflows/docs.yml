@@ -22,15 +22,10 @@ jobs:
 
       - name: Build documentation
         run: |
-          cd docs
-          make html
-
-      - name: Disable Jekyll on GitHub Pages
-        run: |
-          touch docs/_build/html/.nojekyll
+          mkdocs build 
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
+          publish_dir: ./site
