@@ -37,7 +37,7 @@
 <span class="sd">defining room surfaces, and visualizing the calculated reverberation time.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dash</span><span class="w"> </span><span class="kn">import</span> <span class="n">html</span><span class="p">,</span> <span class="n">dcc</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">dash_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dash</span><span class="w"> </span><span class="kn">import</span> <span class="n">html</span><span class="p">,</span> <span class="n">dcc</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">dash_table</span><span class="p">,</span> <span class="n">clientside_callback</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash_daq</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">daq</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">dash_bootstrap_components</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dbc</span>
 
@@ -284,13 +284,13 @@
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;export&quot;</span><span class="p">,</span>
                             <span class="n">n_clicks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The grid search may take several minutes&quot;</span><span class="p">,</span>
-                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button&quot;</span><span class="p">,</span>
+                            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;my-button no-print&quot;</span><span class="p">,</span>
                         <span class="p">),</span>
-                    <span class="p">],</span>
-                    <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-                    <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5px 1px 1px 1px&quot;</span><span class="p">},</span>
+                        <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;placeholder&quot;</span><span class="p">),</span>
+                    <span class="p">]</span>
                 <span class="p">),</span>
-            <span class="p">]</span>
+            <span class="p">],</span>
+            <span class="n">className</span><span class="o">=</span><span class="s2">&quot;no-print&quot;</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">dbc</span><span class="o">.</span><span class="n">Modal</span><span class="p">(</span>
             <span class="p">[</span>
@@ -911,6 +911,22 @@
 
     <span class="k">return</span> <span class="n">fig</span></div>
 
+
+
+<span class="c1"># Clientside callback to trigger browser print</span>
+<span class="n">clientside_callback</span><span class="p">(</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function(n_clicks) {</span>
+<span class="sd">        if (n_clicks &gt; 0) {</span>
+<span class="sd">            window.print();</span>
+<span class="sd">        }</span>
+<span class="sd">        return &#39;&#39;;</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;placeholder&#39;</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;export&#39;</span><span class="p">,</span> <span class="s1">&#39;n_clicks&#39;</span><span class="p">),</span>
+    <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 
           </div>
