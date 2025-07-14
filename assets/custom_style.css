@@ -203,7 +203,7 @@ input[type="checkbox" i] {
 }
 
 .my-button:hover {
-    box-shadow: 0 0 10px #042f33;
+    background-color: #2eaf7d;
 }
 
 .my-button:active {
@@ -390,4 +390,9 @@ input[type="email"].custom-input:focus {
   .no-print {
     display: none;
   }
+}
+
+#area-table .dash-cell-value-container img {
+    height: 24px;
+    width: 24px;
 }

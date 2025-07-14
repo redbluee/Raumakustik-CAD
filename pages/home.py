@@ -40,7 +40,7 @@ df_room_usage = pd.DataFrame(
 column_definitions = []
 column_definitions.append({"name": "Surface Label", "id": "col-1", "editable": True})
 column_definitions.append({"name": "Area m²", "id": "col-2", "editable": True})
-column_definitions.append({"name": "DB", "id": "col-3", "editable": False})
+column_definitions.append({"name": "DB", "id": "col-3", "editable": False, "presentation": "markdown"})
 column_definitions.append({"name": "Sound absorber", "id": "col-4", "editable": True})
 column_definitions.append({"name": "α₆₃", "id": "col-5", "editable": True})
 column_definitions.append({"name": "α₁₂₅", "id": "col-6", "editable": True})
@@ -52,13 +52,13 @@ column_definitions.append({"name": "α₄₀₀₀", "id": "col-11", "editable":
 column_definitions.append({"name": "α₈₀₀₀", "id": "col-12", "editable": True}) 
 
 # Add the delete column as the last one
-column_definitions.append({"name": "", "id": "col-delete", "editable": False})
+column_definitions.append({"name": "", "id": "col-delete", "editable": False, "presentation": "markdown"})
 table_columns = column_definitions
 
 # Define the initial empty row with icons
-initial_empty_row = {f"col-{i+1}": "💾" if f"col-{i+1}" == "col-3" else "" for i in range(12)}
-initial_empty_row["col-3"] = "💾" 
-initial_empty_row["col-delete"] = "🗑️"
+initial_empty_row = {f"col-{i+1}": "" for i in range(12)}
+initial_empty_row["col-3"] = '![DB](/assets/database.svg)'
+initial_empty_row["col-delete"] = '![Delete](/assets/delete.svg)'
 
 
 # Page Layout
@@ -221,6 +221,7 @@ layout = dbc.Container(
                                     # DB Icon
                                     "if": {"column_id": "col-3"},
                                     "textAlign": "center",
+                                    "verticalAlign": "middle",
                                     "cursor": "pointer",
                                     "fontWeight": "bold",
                                     # "color": "#3DED97",
@@ -229,6 +230,7 @@ layout = dbc.Container(
                                     # Delete Icon
                                     "if": {"column_id": "col-delete"},
                                     "textAlign": "center",
+                                    "verticalAlign": "middle",
                                     "cursor": "pointer",
                                     "fontWeight": "bold",
                                     # "color": "#FF6B6B",
@@ -320,8 +322,9 @@ def add_row_to_surface_table(n_clicks, rows):
     """
     if rows is None:
         rows = []
-    new_row_data = {f"col-{i+1}": "💾" if f"col-{i+1}" == "col-3" else "" for i in range(12)}
-    new_row_data["col-delete"] = "🗑️" # Add delete icon to new rows
+    new_row_data = {f"col-{i+1}": "" for i in range(12)}
+    new_row_data["col-3"] = '![DB](/assets/database.svg)'
+    new_row_data["col-delete"] = '![Delete](/assets/delete.svg)'
     rows.append(new_row_data)
     return rows
 
