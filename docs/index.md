@@ -4,7 +4,7 @@ This tool provides a user-friendly interface for calculating and optimizing reve
 
 The tool can be found under this link: [RoomAcousticWizard](https://raumakustik-cad.onrender.com/)
 
-![A screenshot of the RoomAcousticWizard in action](assets/wizard-screenshot.png)
+![A screenshot of the RoomAcousticWizard in action](site/assets/wizard-screenshot.png)
 
 Here is a brief overview of how to use the tool:
 
