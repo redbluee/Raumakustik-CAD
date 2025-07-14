@@ -39,5 +39,5 @@ plugins:
 extra:
   social:
     - icon: fontawesome/solid/rocket
-      name: RoomAcousticWizrard
+      name: RoomAcousticWizard
       link: https://raumakustik-cad.onrender.com/
