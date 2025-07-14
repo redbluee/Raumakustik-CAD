@@ -111,50 +111,45 @@
                         <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Room Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">html</span><span class="o">.</span><span class="n">Sup</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">)]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
                             <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;30&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_volume&quot;</span><span class="p">,</span>
-                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Room Height&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
                             <span class="c1"># placeholder=&quot;3&quot;,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_height&quot;</span><span class="p">,</span>
-                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;°C&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
                             <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;20&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_temperature&quot;</span><span class="p">,</span>
-                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Relative Humidity&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
                             <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;50&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_humidity&quot;</span><span class="p">,</span>
-                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Label</span><span class="p">([</span><span class="s2">&quot;Air Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00A0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;hPa&quot;</span><span class="p">]),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
                         <span class="n">dcc</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span>
-                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
                             <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;1013.5&quot;</span><span class="p">,</span>
                             <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input_room_pressure&quot;</span><span class="p">,</span>
-                            <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                             <span class="n">className</span><span class="o">=</span><span class="s2">&quot;custom-input&quot;</span><span class="p">,</span>  <span class="c1"># Use custom style class</span>
                         <span class="p">),</span>
                         <span class="n">html</span><span class="o">.</span><span class="n">Br</span><span class="p">(),</span>
@@ -520,6 +515,165 @@
 
 
 
+<div class="viewcode-block" id="round_room_volume">
+<a class="viewcode-back" href="../../gui.html#pages.home.round_room_volume">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;input_room_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;input_room_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;n_blur&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;input_room_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_room_volume</span><span class="p">(</span><span class="n">n_blur</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Replace comma with dot and convert to float</span>
+        <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="round_room_height">
+<a class="viewcode-back" href="../../gui.html#pages.home.round_room_height">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;input_room_height&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;input_room_height&#39;</span><span class="p">,</span> <span class="s1">&#39;n_blur&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;input_room_height&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_room_height</span><span class="p">(</span><span class="n">n_blur</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="round_room_temperature">
+<a class="viewcode-back" href="../../gui.html#pages.home.round_room_temperature">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;input_room_temperature&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;input_room_temperature&#39;</span><span class="p">,</span> <span class="s1">&#39;n_blur&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;input_room_temperature&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_room_temperature</span><span class="p">(</span><span class="n">n_blur</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="round_room_humidity">
+<a class="viewcode-back" href="../../gui.html#pages.home.round_room_humidity">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;input_room_humidity&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;input_room_humidity&#39;</span><span class="p">,</span> <span class="s1">&#39;n_blur&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;input_room_humidity&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_room_humidity</span><span class="p">(</span><span class="n">n_blur</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="round_room_pressure">
+<a class="viewcode-back" href="../../gui.html#pages.home.round_room_pressure">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;input_room_pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;input_room_pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;n_blur&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;input_room_pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_room_pressure</span><span class="p">(</span><span class="n">n_blur</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="validate_and_format_table_data">
+<a class="viewcode-back" href="../../gui.html#pages.home.validate_and_format_table_data">[docs]</a>
+<span class="nd">@callback</span><span class="p">(</span>
+    <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">allow_duplicate</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data_timestamp&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+    <span class="n">State</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data_previous&#39;</span><span class="p">),</span>
+    <span class="n">prevent_initial_call</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_and_format_table_data</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_previous</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate and format the data in the area-table.</span>
+<span class="sd">    Ensures that area and alpha values are numeric and rounded to two decimal places.</span>
+<span class="sd">    Reverts invalid inputs to their previous state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data_previous</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">dash</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">PreventUpdate</span>
+
+    <span class="c1"># If a row was added or deleted, the lengths will be different.</span>
+    <span class="c1"># In this case, we don&#39;t want to validate, so we allow the update to proceed</span>
+    <span class="c1"># without modification from this callback.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_previous</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="c1"># Find the changed cell</span>
+    <span class="n">changed_row_idx</span><span class="p">,</span> <span class="n">changed_col_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="c1"># Using .get() to avoid KeyErrors if a column was somehow removed</span>
+        <span class="n">diff_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="n">data_previous</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">diff_keys</span><span class="p">:</span>
+            <span class="n">changed_row_idx</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">changed_col_id</span> <span class="o">=</span> <span class="n">diff_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">changed_row_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">dash</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">PreventUpdate</span>
+
+    <span class="c1"># List of columns to validate</span>
+    <span class="n">editable_numeric_cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;col-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">changed_col_id</span> <span class="ow">in</span> <span class="n">editable_numeric_cols</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span>
+        <span class="n">prev_value</span> <span class="o">=</span> <span class="n">data_previous</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">cleaned_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cleaned_value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="c1"># Allow user to clear the cell</span>
+                <span class="k">return</span> <span class="n">data</span>
+
+            <span class="c1"># Check for valid float format</span>
+            <span class="k">if</span> <span class="n">cleaned_value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">cleaned_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">cleaned_value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cleaned_value</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">())):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">num_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cleaned_value</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="c1"># Revert if conversion fails</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Revert if format is invalid</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_value</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># If value is None or other type, and it&#39;s a change, revert it.</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">prev_value</span><span class="p">:</span>
+             <span class="n">data</span><span class="p">[</span><span class="n">changed_row_idx</span><span class="p">][</span><span class="n">changed_col_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_value</span>
+
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
 <span class="c1"># Connect all inputs to the calculation module and update the graph</span>
 <div class="viewcode-block" id="update_graph_with_calculation">
 <a class="viewcode-back" href="../../gui.html#pages.home.update_graph_with_calculation">[docs]</a>
@@ -568,12 +722,21 @@
 <span class="sd">    plotly.graph_objects.Figure</span>
 <span class="sd">        An updated Plotly figure with the calculated reverberation time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Helper to convert input to float, handling commas.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_float</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">default</span>
+
     <span class="c1"># Default values for numeric inputs</span>
-    <span class="n">volume</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="k">if</span> <span class="n">volume</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">30</span>
-    <span class="n">height</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">temp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">20</span>
-    <span class="n">humidity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">humidity</span><span class="p">)</span> <span class="k">if</span> <span class="n">humidity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">50</span>
-    <span class="n">pressure</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span> <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1013.25</span> <span class="c1"># hPa</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="n">humidity</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">humidity</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="mf">1013.25</span><span class="p">)</span> <span class="c1"># hPa</span>
 
     <span class="c1"># Standard octave bands for the x-axis</span>
     <span class="n">frequency_bands</span> <span class="o">=</span> <span class="p">[</span><span class="mi">63</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">]</span>
@@ -615,16 +778,20 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Use a helper to safely convert values to float, defaulting to np.nan for empty strings</span>
                 <span class="k">def</span><span class="w"> </span><span class="nf">safe_float</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                    <span class="c1"># The validation callback should have already formatted the numbers,</span>
+                    <span class="c1"># but this is a safeguard.</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="c1"># Return NaN if the value is an empty string or cannot be converted</span>
-                        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
                 <span class="n">area</span> <span class="o">=</span> <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-2&#39;</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">area</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">area</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">area</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">area</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">area</span><span class="p">):</span>
                     <span class="n">absorb_coeffs</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-5&#39;</span><span class="p">)),</span>
                         <span class="n">safe_float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col-6&#39;</span><span class="p">)),</span>
@@ -667,7 +834,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">df_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
             
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">df_target</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">df_target</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">room_usage</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">):</span>
             <span class="c1"># Find the first and last indices where T_max is greater than 0</span>
             <span class="n">non_zero_indices</span> <span class="o">=</span> <span class="n">df_target</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">df_target</span><span class="p">[</span><span class="s1">&#39;T_max&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">first_index</span> <span class="o">=</span> <span class="n">non_zero_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -696,7 +863,7 @@
             <span class="n">x</span><span class="o">=</span><span class="n">df_reverb</span><span class="p">[</span><span class="s1">&#39;Frequency&#39;</span><span class="p">],</span> 
             <span class="n">y</span><span class="o">=</span><span class="n">df_reverb</span><span class="p">[</span><span class="s1">&#39;Reverberation Time&#39;</span><span class="p">],</span>
             <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines+markers&#39;</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reverberation Time (T)&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reverberation Time&#39;</span><span class="p">,</span>
             <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#3DED97&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="p">))</span>
         
