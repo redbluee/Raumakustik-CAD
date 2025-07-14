@@ -1639,7 +1639,8 @@ DIN 18041 if a room usage type is selected.</p>
 <span class="normal">847</span>
 <span class="normal">848</span>
 <span class="normal">849</span>
-<span class="normal">850</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@callback</span><span class="p">(</span>
+<span class="normal">850</span>
+<span class="normal">851</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@callback</span><span class="p">(</span>
     <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fig-transformed&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
     <span class="p">[</span>
         <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;area-table&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
@@ -1851,6 +1852,7 @@ DIN 18041 if a room usage type is selected.</p>
             <span class="n">title_text</span><span class="o">=</span><span class="s2">&quot;Reverberation Time Calculation with DIN 18041 requirements&quot;</span><span class="p">,</span>
             <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;Frequency in Hz&quot;</span><span class="p">,</span>
             <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Reverberation Time in s&quot;</span><span class="p">,</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">]),</span>
             <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
                 <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
                 <span class="n">tickvals</span><span class="o">=</span><span class="n">frequency_bands</span><span class="p">,</span>
