@@ -82,6 +82,7 @@ layout = dbc.Container(
                             placeholder="30",
                             id="input_room_volume",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label(["Room Height", "\u00A0", "m"]),
@@ -91,6 +92,7 @@ layout = dbc.Container(
                             # placeholder="3",
                             id="input_room_height",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label(["Temperature", "\u00A0", "°C"]),
@@ -100,6 +102,7 @@ layout = dbc.Container(
                             placeholder="20",
                             id="input_room_temperature",
                             className="custom-input",  # Use custom style class
+                            min=-273.15,
                         ),
                         html.Br(),
                         html.Label(["Relative Humidity","\u00A0", "%"]),
@@ -109,6 +112,8 @@ layout = dbc.Container(
                             placeholder="50",
                             id="input_room_humidity",
                             className="custom-input",  # Use custom style class
+                            min=0,
+                            max=100,
                         ),
                         html.Br(),
                         html.Label(["Air Pressure", "\u00A0", "hPa"]),
@@ -118,6 +123,7 @@ layout = dbc.Container(
                             placeholder="1013.5",
                             id="input_room_pressure",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label("Room Usage Type"),
