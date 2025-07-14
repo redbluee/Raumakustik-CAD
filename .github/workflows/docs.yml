@@ -22,8 +22,9 @@ jobs:
 
       - name: Build documentation
         run: |
-          mkdocs build
+          mkdir -p site/assets
           cp ./assets/wizard-screenshot.png ./site/assets/wizard-screenshot.png
+          mkdocs build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
