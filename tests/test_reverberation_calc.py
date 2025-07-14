@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from reverberation_calc import room, material, surface, reverberation_time, DIN_18041_limits
+from src.reverberation_calc import room, material, surface, reverberation_time, DIN_18041_limits
 
 # Fixtures for reusable objects
 @pytest.fixture

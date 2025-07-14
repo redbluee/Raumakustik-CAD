@@ -1,0 +1,43 @@
+site_name: RoomAcousticWizrard
+site_author: Paula Klein, Deniz Sharideh, Linus Staubach
+repo_name: redbluee/Raumakustik-CAD
+repo_url: https://github.com/redbluee/Raumakustik-CAD
+copyright: Copyright &copy; 2025 Paula Klein, Deniz Sharideh, Linus Staubach
+nav:
+  - Home: index.md
+  - "Graphical User Interface": gui.md
+  - "Calculation backend": api.md
+docs_dir: docs
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+  palette:
+    scheme: slate
+    primary: black
+    accent: cyan
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+extra:
+  social:
+    - icon: fontawesome/solid/rocket
+      name: RoomAcousticWizard
+      link: https://raumakustik-cad.onrender.com/

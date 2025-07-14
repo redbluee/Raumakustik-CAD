@@ -8,12 +8,12 @@ class room:
     Parameters
     ----------
     volume : int or float
-        The volume of the room in m².
+        The volume of the room in m$^2$.
 
     Attributes
     ----------
     volume : int or float
-        The volume of the room in m².
+        The volume of the room in m$^2$.
     temperature : int or float
         The temperature of the room in °C (default is 20 °C).
     pressure : int or float
@@ -33,7 +33,7 @@ class room:
         Parameters
         ----------
         volume : int or float 
-            The volume of the room in m².
+            The volume of the room in m$^2$.
 
         Raises
         ------
@@ -89,12 +89,12 @@ class room:
 
     def set_volume(self, volume):
         """
-        Sets the volume of the room in m².
+        Sets the volume of the room in m$^2$.
         
         Parameters
         ----------
         volume : int or float
-        The volume of the room in m².
+            The volume of the room in m$^2$.
 
         Raises
         -------
@@ -111,12 +111,12 @@ class room:
 
     def get_volume(self):
         """
-        Returns the volume of the room in m².
+        Returns the volume of the room in m$^2$.
 
         Returns
         -------
         float
-            The volume of the room in m².
+            The volume of the room in m$^2$.
         """
         return self.volume
     
@@ -235,12 +235,15 @@ class room:
 
 class air_damp:
     """
-    Defines an "air_damp" object that calculates the sound absorption coefficient m in 1/m of air based on frequency, temperature, humidity, and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.
+    Defines an "air_damp" object that calculates the sound absorption coefficient $m$ in 1/m of air based on frequency, temperature, humidity, and pressure according to DIN EN ISO 354, based on $alpha$ from ISO 9613-1.
 
     Parameters
     ----------
     frequency : list
         A list of frequencies in Hz for which the sound absorption coefficient is calculated.
+
+    Attributes
+    ----------
     pressure : int or float, optional
         The pressure in kPa (default is 101.325 kPa).
     ref_pressure : int or float, optional
@@ -248,7 +251,7 @@ class air_damp:
     rel_humidity : int or float, optional
         The relative humidity in % (default is 50 %).
     abs_humidity : int or float, optional
-        The absolute humidity as molar conentration of water vapour in air in % according to ISO 9613-1 Annex B.
+        The absolute humidity as molar concentration of water vapour in air in % according to ISO 9613-1 Annex B.
     temperature : int or float, optional
         The temperature in Celsius (default is 20°C).
     ref_temperature : int or float, optional
@@ -437,12 +440,12 @@ class air_damp:
 
     def calculate_coefficient(self):
         """
-        Calculates the sound absorption coefficient m in 1/m and alpha in dB/m of air based on frequency, temperature, humidity and pressure according to DIN EN ISO 354, based on alpha from ISO 9613-1.
+        Calculates the sound absorption coefficient $m$ in 1/m and $alpha$ in dB/m of air based on frequency, temperature, humidity and pressure according to DIN EN ISO 354, based on $alpha$ from ISO 9613-1.
         
         Returns
         -------
         list
-            The sound absorption coefficient m in 1/m.
+            The sound absorption coefficient $m$ in 1/m.
         
         Raises
         -------
@@ -474,7 +477,7 @@ class air_damp:
         
 class material:
     """
-    Defines a "material" object with properties such as name, absorption coefficient(, and price).
+    Defines a "material" object with properties such as name, absorption coefficient (and price).
 
     Attributes
     ----------
@@ -483,7 +486,7 @@ class material:
     absorption_coefficient : list
         The absorption coefficient of the material at different frequencies.
     price : int or float, optional
-        The price of the material as €/m² (default is None).
+        The price of the material as €/m$^2$ (default is None).
     """
 
     def __init__(self, name, absorption_coefficient):
@@ -610,7 +613,7 @@ class material:
         Parameters
         ----------
         price : int or float
-            The price of the material in €/m².
+            The price of the material in €/m$^2$.
 
         Raises
         -------
@@ -627,12 +630,12 @@ class material:
 
     def get_price(self):
         """
-        Returns the price of the material in €/m² if it has been set.
+        Returns the price of the material in €/m$^2$ if it has been set.
         
         Returns
         -------
         float or None
-            The price of the material in €/m² if it has been set, otherwise returns None.
+            The price of the material in €/m$^2$ if it has been set, otherwise returns None.
         """
         return self.price if hasattr(self, 'price') else None
     
@@ -652,7 +655,7 @@ class surface:
     name : str
         The name of the surface.
     area : int or float
-        The area of the surface in m².
+        The area of the surface in m$^2$.
     material : material
         The material of the surface, which is an instance of the material class.
     """
@@ -666,7 +669,7 @@ class surface:
         name : str
             The name of the surface.
         area : int or float
-            The area of the surface in m².
+            The area of the surface in m$^2$.
         material : material 
             The material of the surface, which is an instance of the material class.
         
@@ -692,7 +695,7 @@ class surface:
         Parameters
         ----------
         area : int or float
-            The area of the surface in m².
+            The area of the surface in m$^2$.
         
         Raises
         -------
@@ -714,7 +717,7 @@ class surface:
         Returns
         -------
         float
-            The area of the surface in m².
+            The area of the surface in m$^2$.
         """
 
         return self.area
@@ -798,11 +801,11 @@ class reverberation_time:
     air_damp_calc : bool, optional
         A flag indicating whether air damping is considered in the calculation (default is True).
     Aeq : int or float
-        The equivalent sound absorption area of the room in m², calculated based on the surfaces and their materials.
+        The equivalent sound absorption area of the room in m$^2$, calculated based on the surfaces and their materials.
     c : int or float
         The speed of sound in air in m/s, calculated based on the room's temperature and pressure.
     volume : int or float
-        The volume of the room in m³.
+        The volume of the room in m$^3$.
     air_damp : air_damp
         An instance of the air_damp class that calculates the sound absorption coefficient of air based on frequency, temperature, humidity, and pressure.
     reverberation_time : list
@@ -826,7 +829,7 @@ class reverberation_time:
         
         Raises
         -------
-        TalueError
+        ValueError
             If the room is not an instance of the room class.
         TypeError
             If the surfaces are not a list or if any surface is not an instance of the surface class.
@@ -884,13 +887,13 @@ class reverberation_time:
 
     def calculate_Aeq(self):
         """
-        Calculates the equivalent sound absorption area (Aeq) in m² of the room based on the surfaces and their materials.
+        Calculates the equivalent sound absorption area (Aeq) in m$^2$ of the room based on the surfaces and their materials.
         The equivalent sound absorption area is calculated as the sum of the product of the absorption coefficient and the area of each surface.
         
         Returns
         -------
         float
-            The equivalent sound absorption area of the room in m².
+            The equivalent sound absorption area of the room in m$^2$.
         
         Raises
         -------
@@ -914,39 +917,31 @@ class reverberation_time:
 
         The reverberation time is calculated using the formula:
 
-        .. math:: 
-        
-            T = \frac{55.3 \cdot V}{A_{eq} \cdot c}
+        $$T = \frac{55.3 \cdot V}{A_{eq} \cdot c}$$
 
-        where
+        where:
 
-        - :math:`T` is the reverberation time in s  
-        - :math:`V` is the volume of the room in m³  
-        - :math:`A_{eq}` is the equivalent sound absorption area in m²  
-        - :math:`c` is the speed of sound in air in m/s
+        - $T$ is the reverberation time in s
+        - $V$ is the volume of the room in m³
+        - $A_{eq}$ is the equivalent sound absorption area in m²
+        - $c$ is the speed of sound in air in m/s
 
         If air damping is considered, the formula is corrected by the speed of sound and air damping:
 
-        .. math:: 
-        
-            T = \frac{55.3}{c} \cdot \frac{V}{A_{eq} + 4 \cdot V \cdot m}
+        $$T = \frac{55.3}{c} \cdot \frac{V}{A_{eq} + 4 \cdot V \cdot m}$$
 
-        where :math:`m` is the sound absorption coefficient of air in 1/m, calculated based on frequency, temperature, humidity, and pressure according to EN ISO 354 and ISO 9613-1.
+        where $m$ is the sound absorption coefficient of air in 1/m, calculated based on frequency, temperature, humidity, and pressure according to EN ISO 354 and ISO 9613-1.
 
         If a measured reverberation time is provided, its equivalent sound absorption area
 
-        .. math:: 
-        
-            A_{eq, measured} = \frac{55.3 \cdot V}{T_{measured} \cdot c}
+        $$A_{eq, measured} = \frac{55.3 \cdot V}{T_{measured} \cdot c}$$
 
         is used to specify initial values for the extension with additional sound absorption areas. The reverberation time is then calculated as:
 
-        .. math:: 
-        
-            T = \frac{55.3 \cdot V}{(A_{eq} + A_{eq, measured}) \cdot c}
+        $$T = \frac{55.3 \cdot V}{(A_{eq} + A_{eq, measured}) \cdot c}$$
         """
         # Calculate the reverberation time based on the optimized Sabine formula according to DIN EN ISO 354
-        if self.air_damp_calc == True:
+        if self.air_damp_calc is True:
             # If air damping is considered, use the Sabine formula corrected by the speed of sound and air damping
             if self.meas_reverberation_time is not None:
                 # If measured reverberation time is provided, use the calculated equivalent sound absorption area to correct the measured reverberation time
@@ -975,11 +970,11 @@ class DIN_18041_limits:
     room : room
         The room for which the limits are calculated, which is an instance of the room class.
     volume : int or float
-        The volume of the room in m³.
+        The volume of the room in m$^3$.
     c : int or float
         The speed of sound in air in m/s, calculated based on the room's temperature and pressure.
     type : str
-        The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", "no requirements").
+        The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", or 'no requirements'). 
     T_soll : int or float
         The target reverberation time in s according to DIN 18041, calculated based on the room type, volume and height.
     T_upper_limit : np.array
@@ -998,7 +993,7 @@ class DIN_18041_limits:
         calc_room : room
             The room for which the limits are calculated, which is an instance of the room class.
         type : str
-            The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", "no requirements"). 
+            The type of room according to DIN 18041, specified as a string (e.g., "A1", "B2", or 'no requirements'). 
 
         Raises
         -------
@@ -1012,7 +1007,8 @@ class DIN_18041_limits:
         if not isinstance(type, str):
             raise TypeError("Type must be a string.")
         if len(type) != 2 or type[0] not in ["A", "B"] or type[1] not in ["1", "2", "3", "4", "5"]:
-            raise ValueError("Type must be a valid room type according to DIN 18041 (e.g., 'A1', 'B2') or , 'no requirements'.")
+            if type != "no requirements":
+                raise ValueError("Type must be a valid room type according to DIN 18041 (e.g., 'A1', 'B2') or 'no requirements'.")
         self.calc_room = calc_room
         self.volume = self.calc_room.volume
         self.c = self.calc_room.c
@@ -1022,7 +1018,7 @@ class DIN_18041_limits:
 
     def get_limits(self):
         """
-        Calculates the limits for reverberation time ain s ccording to DIN 18041 based on room type, volume, and height.
+        Calculates the limits for reverberation time in s according to DIN 18041 based on room type, volume, and height.
         
         Returns
         -------
