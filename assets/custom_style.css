@@ -149,6 +149,20 @@ input[type="checkbox" i] {
     background-color: #042f33;
 }
 
+/* === PRINT STYLES === */
+@media print {
+    /* Force printing of background colors and images */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Hide elements that shouldn't be printed */
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
 .rc-slider-handle:hover {
     border-color: #f6f6f6;
 }
@@ -347,4 +361,33 @@ input[type="email"].custom-input:focus {
 }
 .material-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table tbody tr:hover {
     cursor: pointer;
+}
+
+/* Print styles */
+@media print {
+  .container {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  body {
+    -webkit-transform: scale(0.65); /* Safari and Chrome */
+    -moz-transform: scale(0.65);    /* Firefox */
+    -ms-transform: scale(0.65);     /* IE 9 */
+    -o-transform: scale(0.65);      /* Opera */
+    transform: scale(0.65);
+    -webkit-transform-origin: top left;
+    -moz-transform-origin: top left;
+    -ms-transform-origin: top left;
+    -o-transform-origin: top left;
+    transform-origin: top left;
+    width: 154%; /* 100 / 0.65 */
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .no-print {
+    display: none;
+  }
 }
