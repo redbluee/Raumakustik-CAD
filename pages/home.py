@@ -78,46 +78,52 @@ layout = dbc.Container(
                         html.Label(["Room Volume", "\u00A0", "m", html.Sup("3")]),
                         html.Br(),
                         dcc.Input(
-                            type="text",
+                            type="number",
                             placeholder="30",
                             id="input_room_volume",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label(["Room Height", "\u00A0", "m"]),
                         html.Br(),
                         dcc.Input(
-                            type="text",
+                            type="number",
                             # placeholder="3",
                             id="input_room_height",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label(["Temperature", "\u00A0", "°C"]),
                         html.Br(),
                         dcc.Input(
-                            type="text",
+                            type="number",
                             placeholder="20",
                             id="input_room_temperature",
                             className="custom-input",  # Use custom style class
+                            min=-273.15,
                         ),
                         html.Br(),
                         html.Label(["Relative Humidity","\u00A0", "%"]),
                         html.Br(),
                         dcc.Input(
-                            type="text",
+                            type="number",
                             placeholder="50",
                             id="input_room_humidity",
                             className="custom-input",  # Use custom style class
+                            min=0,
+                            max=100,
                         ),
                         html.Br(),
                         html.Label(["Air Pressure", "\u00A0", "hPa"]),
                         html.Br(),
                         dcc.Input(
-                            type="text",
+                            type="number",
                             placeholder="1013.5",
                             id="input_room_pressure",
                             className="custom-input",  # Use custom style class
+                            min=0,
                         ),
                         html.Br(),
                         html.Label("Room Usage Type"),
@@ -479,12 +485,10 @@ def update_area_table_with_material(active_cell, material_data, active_row_index
     State('input_room_volume', 'value')
 )
 def round_room_volume(n_blur, value):
-    if value is None or value == '':
+    if value is None:
         return None
     try:
-        # Replace comma with dot and convert to float
-        num_value = float(str(value).replace(',', '.'))
-        return round(num_value, 2)
+        return round(float(value), 2)
     except (ValueError, TypeError):
         return None
 
@@ -494,11 +498,10 @@ def round_room_volume(n_blur, value):
     State('input_room_height', 'value')
 )
 def round_room_height(n_blur, value):
-    if value is None or value == '':
+    if value is None:
         return None
     try:
-        num_value = float(str(value).replace(',', '.'))
-        return round(num_value, 2)
+        return round(float(value), 2)
     except (ValueError, TypeError):
         return None
 
@@ -508,11 +511,10 @@ def round_room_height(n_blur, value):
     State('input_room_temperature', 'value')
 )
 def round_room_temperature(n_blur, value):
-    if value is None or value == '':
+    if value is None:
         return None
     try:
-        num_value = float(str(value).replace(',', '.'))
-        return round(num_value, 2)
+        return round(float(value), 2)
     except (ValueError, TypeError):
         return None
 
@@ -522,11 +524,10 @@ def round_room_temperature(n_blur, value):
     State('input_room_humidity', 'value')
 )
 def round_room_humidity(n_blur, value):
-    if value is None or value == '':
+    if value is None:
         return None
     try:
-        num_value = float(str(value).replace(',', '.'))
-        return round(num_value, 2)
+        return round(float(value), 2)
     except (ValueError, TypeError):
         return None
 
@@ -536,11 +537,10 @@ def round_room_humidity(n_blur, value):
     State('input_room_pressure', 'value')
 )
 def round_room_pressure(n_blur, value):
-    if value is None or value == '':
+    if value is None:
         return None
     try:
-        num_value = float(str(value).replace(',', '.'))
-        return round(num_value, 2)
+        return round(float(value), 2)
     except (ValueError, TypeError):
         return None
 
