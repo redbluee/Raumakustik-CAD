@@ -132,14 +132,14 @@ class room:
         Raises
         -------
         TypeError
-            If the temperature is not an integer or float.
+            If the temperature is not a numeric value.
         ValueError
-            If the temperature is not a positive integer.
+            If the temperature is not above absolute zero (-273.15 °C).
         """
         if not isinstance(temperature, (int, float)):
             raise TypeError("Temperature must be an integer or float.")
-        if temperature < 0:                                             # Anschauen in ISO!!!
-            raise ValueError("Temperature must be .")
+        if temperature < -273.15:
+            raise ValueError("Temperature must be above absolute zero (-273.15 °C).")
         self.temperature = temperature
 
     def get_temperature(self):
