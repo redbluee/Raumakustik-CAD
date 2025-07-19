@@ -1,6 +1,6 @@
-# Calculation backend
+# Database Integration
 
-::: src.reverberation_calc
+::: src.material_database
     handler: python
     options:
       show_root_heading: true

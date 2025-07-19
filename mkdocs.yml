@@ -6,7 +6,8 @@ copyright: Copyright &copy; 2025 Paula Klein, Deniz Sharideh, Linus Staubach
 nav:
   - Home: index.md
   - "Graphical User Interface": gui.md
-  - "Calculation backend": api.md
+  - "Calculation Backend": api.md
+  - "Database Integration": materials.md
 docs_dir: docs
 theme:
   name: material
