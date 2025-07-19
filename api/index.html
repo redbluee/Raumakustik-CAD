@@ -14,13 +14,15 @@
         <link rel="prev" href="../gui/">
       
       
+        <link rel="next" href="../materials/">
+      
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Calculation backend - RoomAcousticWizard</title>
+        <title>Calculation Backend - RoomAcousticWizard</title>
       
     
     
@@ -108,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Calculation backend
+              Calculation Backend
             
           </span>
         </div>
@@ -233,7 +235,26 @@
   
     
   
-  Calculation backend
+  Calculation Backend
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../materials/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Database Integration
 
       </a>
     </li>
@@ -358,7 +379,7 @@
   
   
   <span class="md-ellipsis">
-    Calculation backend
+    Calculation Backend
     
   </span>
   
@@ -371,7 +392,7 @@
   
   
   <span class="md-ellipsis">
-    Calculation backend
+    Calculation Backend
     
   </span>
   
@@ -862,6 +883,28 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../materials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database Integration
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -8753,169 +8796,6 @@ The equivalent sound absorption area is calculated as the sum of the product of 
 
 </div>
 
-
-
-
-  </div>
-
-    </div>
-
-</div><hr />
-<h1 id="material-database">Material Database</h1>
-
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="src.material_database" class="doc doc-heading">
-            <code>src.material_database</code>
-
-
-</h2>
-
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="src.material_database.get_database_material" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_database_material</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Retrieves the material name and absorption coefficients from a CSV file based on the given index.
-The CSV file is expected to be in the current working directory and named "materials.csv".</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>idx</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The index of the material in the CSV file.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="tuple">tuple</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A tuple containing the material name material_name (str) and an array of absorption coefficients abs_coeff (np.ndarray).
-The absorption coefficients are expected to be in the columns 1 to 8 of the CSV file.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-            <details class="quote">
-              <summary>Source code in <code>src/material_database.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_database_material</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retrieves the material name and absorption coefficients from a CSV file based on the given index.</span>
-<span class="sd">    The CSV file is expected to be in the current working directory and named &quot;materials.csv&quot;.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    idx : int</span>
-<span class="sd">        The index of the material in the CSV file.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    tuple</span>
-<span class="sd">        A tuple containing the material name material_name (str) and an array of absorption coefficients abs_coeff (np.ndarray).</span>
-<span class="sd">        The absorption coefficients are expected to be in the columns 1 to 8 of the CSV file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;materials.csv&quot;</span><span class="p">))</span>
-    <span class="n">material_name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="n">abs_coeff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">material_name</span><span class="p">,</span><span class="n">abs_coeff</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
 
 
 
